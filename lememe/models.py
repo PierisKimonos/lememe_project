@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from lememe.storage import OverwriteStorage
 
 
 ## from lememe.models import UserProfile, Post, Comment, Preference, Category
@@ -9,6 +10,13 @@ def get_user_image_folder(instance, filename):
     name = instance.user.username
     filename = "%s_profile_pic%s"%(name,filename[filename.find('.'):])
     return "%s/%s"%(instance.user.username,filename)
+
+
+def get_post_image_folder(instance, filename):
+    # name = instance.user.username
+    # filename = "%s_post_%s"%(name,filename[filename.find('.'):])
+    return "%s/post/%s"%(instance.user.username,filename)
+
 
 class Category(models.Model):
     max_length = 128
@@ -30,12 +38,13 @@ class Category(models.Model):
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     # users_who_liked = models.ManyToManyField(User, through='Preference', symmetrical=True)
     title = models.CharField(max_length=128)
     date = models.DateTimeField(auto_now_add=True, blank=True)
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
+    image = models.ImageField(storage=OverwriteStorage(),upload_to=get_post_image_folder, blank=True, verbose_name="Image")
+    # likes = models.IntegerField(default=0)
+    # dislikes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -61,7 +70,7 @@ class UserProfile(models.Model):
     email = models.EmailField(blank=True)
     website = models.URLField(blank=True)
     joined = models.DateField(auto_now=True)
-    picture = models.ImageField(upload_to=get_user_image_folder, blank=True, verbose_name='Profile picture')
+    picture = models.ImageField(storage=OverwriteStorage(),upload_to=get_user_image_folder, blank=True, verbose_name='Profile picture')
 
     # Override the __unicode__() method to return out something meaningful!
     # Remember if you use Python 2.7.x, define __unicode__ too!

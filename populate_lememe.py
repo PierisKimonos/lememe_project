@@ -1,4 +1,4 @@
-import os
+import os, random
 from datetime import datetime
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lememe_project.settings')
 
@@ -40,22 +40,51 @@ def populate():
         "School": {"views": 128},
         "Sport": {"views": 128},}
 
+    posts = {
+        "maria": [
+            {"title": "Title for post 1",
+             "category": "Funny",
+             "image": "maria1.jpg"},
+
+            {"title": "Title for post 2",
+             "category": "Funny",
+             "image": "maria2.jpg"},
+
+            {"title": "Title for post 3",
+             "category": "Funny",
+             "image": "maria3.jpg"},
+
+        ],
+        "john": [
+            {"title": "Title for post 1",
+             "category": "Politics",
+             "image": "john1.jpg"},
+
+            {"title": "Title for post 2",
+             "category": "Politics",
+             "image": "john2.jpg"},
+
+            {"title": "Title for post 3",
+             "category": "Politics",
+             "image": "john3.jpg"},
+        ],
+    }
+
     users = {"maria": {"password": "1111",
                        "bio": "Maria's Bio.",
                        "email": "maria1234@lememe.com",
                        "website": "www.maria1234.com",
+                       "posts": posts["maria"],
                        # "comments": maria_comments,
-                       # "posts": maria_posts,
                        },
-             "John": {"password": "1111",
+             "john": {"password": "1111",
                       "bio": "John's Bio.",
                       "email": "john1234@lememe.com",
                       "website": "www.john1234.com",
+                      "posts": posts["john"],
                       # "comments": john_comments,
-                      # "posts": john_posts,
                       }
              }
-
 
     #
     # comments = [
@@ -74,42 +103,6 @@ def populate():
     #      }
     # ]
 
-    python_pages = [
-        {"title": "Official Python Tutorial",
-         "url":"http://docs.python.org/2/tutorial/",
-         "views": 1},
-
-        {"title": "How to Think like a Computer Scientist",
-         "url": "http://www.greenteapress.com/thinkpython/",
-         "views": 1
-         },
-
-        {"title": "Learn Python in 10 Minutes",
-         "url": "http://www.korokithakis.net/tutorials/python/",
-         "views": 1}]
-
-    django_pages = [
-        {"title": "Official Django Tutorial",
-         "url":"https://docs.djangoproject.com/en/1.9/intro/tutorial01/",
-         "views": 1},
-
-        {"title": "Django Rocks",
-         "url": "http://www.djangorocks.com/",
-         "views": 1},
-
-        {"title": "How to Tango with Django",
-         "url": "http://www.tangowithdjango.com/",
-         "views": 1}]
-
-    other_pages = [
-        {"title": "Bottle",
-         "url":"http://bottlepy.org/docs/dev/",
-         "views": 1},
-
-        {"title": "Flask",
-         "url": "http://flask.pocoo.org",
-         "views": 1}]
-
     # ----------------------------------------------------
     # ENTITIES
     # posts(User, Category, title, date, likes, dislikes)
@@ -123,11 +116,12 @@ def populate():
     # ----------------------------------------------------
     # Order in which entities have to be created:
     # 1. Superuser
-    # 2. UserProfiles
-    # 3. Categories
+    # 2. Categories
+    # 3. UserProfiles
     # 4. Posts
     # 5. Comments
     # ----------------------------------------------------
+
 
     for cat in sorted(categories.keys()):
         cat_data = categories.get(cat)
@@ -142,6 +136,21 @@ def populate():
                      user_data["email"],
                      user_data["website"])
         # need to add posts and then comments
+        for post in posts[user]:
+            # If the category does not exist, allow the user to create it
+            category = Category.objects.get(name=post["category"])
+            p = add_post(u,
+                         category,
+                         post["title"],
+                         post["image"])
+
+    # add 50 random comments to random posts as random existing users
+    numOfComments = 50
+    for i in range(1, numOfComments + 1):
+        if Comment.objects.filter(id=i).count() == 0:
+            user = random.choice(User.objects.all())
+            post = random.choice(Post.objects.all())
+            c = add_comment(user=user,post=post, text=generateHaHaComment())
 
 
     # # Print out the categories we have added.
@@ -163,15 +172,15 @@ def add_user(username, password, bio, email, website):
     user = User.objects.get_or_create(username=username)[0]
     u = UserProfile.objects.get_or_create(user=user)[0]
     u.password = password
-    image_path = os.path.join(PROJECT_DIR, 'population_images','profiles','%s.jpg'%username)
-    upload_path = os.path.join(PROJECT_DIR, 'media','%s'%username)
-    u.picture.save("%s.jpg"%username, File(open(image_path, 'rb')))
+    if u.picture.name != "%s.jpg"%username:
+        image_path = os.path.join(PROJECT_DIR, 'population_images','profiles','%s.jpg'%username)
+        u.picture.save("%s.jpg"%username, File(open(image_path, 'rb')))
     u.bio = bio
     u.email = email
     u.website = website
     u.joined = datetime.now()
     u.save()
-    return u
+    return user
 
 
 def add_category(user, name, views=0):
@@ -180,8 +189,31 @@ def add_category(user, name, views=0):
     c.save()
     return c
 
+# posts(User, Category, title, date)
+def add_post(user, category, title, image_name):
+    p = Post.objects.get_or_create(title=title, user=user, category=category)[0]
+    image_path = os.path.join(PROJECT_DIR, 'population_images', 'posts', image_name)
+    p.image.save(image_name, File(open(image_path, 'rb')))
+    p.save()
+    return p
+
+
+def add_comment(user, post, text):
+    c = Comment.objects.create(user=user, post=post)
+    c.text = text
+    c.save()
+    return c
+
+
+def generateHaHaComment():
+    hahas = ["ha", "hahaha", "hahahahaha", "lol", "omg"]
+    comment = []
+    for i in range(10):
+        comment.append(random.choice(hahas))
+    return " ".join(comment)
+
 
 # Start execution here!
 if __name__ == '__main__':
-    print("Starting Rango population script...")
+    print("Starting Lememe population script...")
     populate()
