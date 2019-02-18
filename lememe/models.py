@@ -67,9 +67,7 @@ class UserProfile(models.Model):
 
     # The additional attributes we wish to include.
     bio = models.CharField(max_length=bio_length, blank=True)
-    email = models.EmailField(blank=True)
     website = models.URLField(blank=True)
-    joined = models.DateField(auto_now=True)
     picture = models.ImageField(storage=OverwriteStorage(),upload_to=get_user_image_folder, blank=True, verbose_name='Profile picture')
 
     # Override the __unicode__() method to return out something meaningful!

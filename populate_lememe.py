@@ -71,6 +71,8 @@ def populate():
     }
 
     users = {"maria": {"password": "1111",
+                       "firstname": "Maria",
+                       "surname": "Smith",
                        "bio": "Maria's Bio.",
                        "email": "maria1234@lememe.com",
                        "website": "www.maria1234.com",
@@ -78,6 +80,8 @@ def populate():
                        # "comments": maria_comments,
                        },
              "john": {"password": "1111",
+                      "firstname": "John",
+                      "surname": "McDonald",
                       "bio": "John's Bio.",
                       "email": "john1234@lememe.com",
                       "website": "www.john1234.com",
@@ -132,6 +136,8 @@ def populate():
     for user, user_data in users.items():
         u = add_user(user,
                      user_data["password"],
+                     user_data["firstname"],
+                     user_data["surname"],
                      user_data["bio"],
                      user_data["email"],
                      user_data["website"])
@@ -168,15 +174,17 @@ def create_superuser(username, password):
     return superuser
 
 
-def add_user(username, password, bio, email, website):
-    user = User.objects.get_or_create(username=username)[0]
+def add_user(username, password, firstname, surname, bio, email, website):
+    user = User.objects.get_or_create(username=username, first_name=firstname, last_name=surname, email=email)[0]
     u = UserProfile.objects.get_or_create(user=user)[0]
+    # u.first_name = firstname
+    # u.last_name = surname
     u.password = password
     if u.picture.name != "%s.jpg"%username:
         image_path = os.path.join(PROJECT_DIR, 'population_images','profiles','%s.jpg'%username)
         u.picture.save("%s.jpg"%username, File(open(image_path, 'rb')))
     u.bio = bio
-    u.email = email
+    # u.email = email
     u.website = website
     u.joined = datetime.now()
     u.save()

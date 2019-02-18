@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load lememe_template_tags %}
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Pieris Kimonos, Callum Firth, Iacovos Kelepeniotis and Rishi Vinod">
+
+    <title id="title_elem">
+        {% block title_block %}
+            Lememe
+        {% endblock %}
+    </title>
+
+    <!--load page icon-->
+    <link rel="icon" href="{% static 'images\lememe_icon.jpg' %}">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/starter-template.css' %}" rel="stylesheet">
+
+</head>
+<body class="radial-gradient">
+    <div>
+        {% block welcome_block %}
+        {% endblock %}
+    </div>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="">
+        <img id="lememe_logo" src="{% static 'images\lememe_logo.svg' %}">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mx-auto nav-fill">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'lememe:index' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'lememe:index' %}">Feeling Lucky?</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'lememe:contact' %}">Contact Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'lememe:about' %}">About</a>
+            </li>
+            <li class="divider-vertical d-none d-md-block"></li>
+            {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="" id="dropdown01"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ user.username.capitalize }}<div class="photo" style="margin-left: 10px"><img src="{% static 'images\placeholder_profile.png' %}"></div></a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="">Profile</a>
+                    <a class="dropdown-item" href="">Upload</a>
+                    <a class="dropdown-item" href="">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="">Logout</a>
+                </div>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'lememe:index' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'lememe:index' %}">Registration</a>
+            </li>
+            {% endif %}
+        </ul>
+        <form class="form-inline my-0 my-lg-0" action="{% url 'lememe:index' %}" method="GET">
+            <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}" required="required"
+                   placeholder="Search" aria-label="Search">
+            <button class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img src="{% static 'icons/search.svg'%}"></button>
+        </form>
+    </div>
+</nav>
+    <main role="main" class="container">
+        <div class="main_body">
+            {% block body_block %}
+            <div class="shadow-lg p-3 mb-5 bg-white rounded">
+
+                <!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
+                3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        {% block sidebar_block %}
+                        {% get_category_list category %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+                        {% block rightbody_block %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+        <br>
+
+</main><!-- /.container -->
+<script src="{% static 'js/customscripts.js' %}"></script>
+<script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
+<script>window.jQuery || document.write('<script src="static/js/jquery-3.3.1.slim.min.js"><\/script>')</script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body></html>

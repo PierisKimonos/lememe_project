@@ -1,0 +1,27 @@
+<div class="card shadow-sm">
+    <div class="card-header bg-dark">
+        <h5 class="text-white">Categories</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% if cats %}
+        {% for c in cats %}
+        {% if c == act_cat %}
+        <li class="list-group-item">
+            <strong>
+                <a href="{% url 'lememe:show_category' c.slug %}">{{ c.name }}</a>
+            </strong>
+        </li>
+        {% else %}
+        <li class="list-group-item">
+            <a href="{% url 'lememe:show_category' c.slug %}">{{ c.name }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <li class="list-group-item"><strong>There are no categories present.</strong></li>
+        {% endif %}
+    </ul>
+</div>
+
+
+

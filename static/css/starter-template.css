@@ -1,0 +1,60 @@
+body {
+    padding-top: 5rem;
+}
+
+.radial-gradient {
+  background-image: radial-gradient(farthest-side at 50% 0%,
+      #ccc 0%, #fff 100%);
+}
+
+.welcome_text {
+    text-align: center;
+    font-style: italic;
+}
+
+.main_body {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+#lememe_logo {
+    height: 30px;
+}
+
+.navbar {
+    padding: 10px 30px 10px 15px;
+    width: 100%;
+    z-index: 1050;
+    background: #1a1e34;
+}
+
+.navbar .photo {
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.navbar .photo img {
+    width: 100%;
+}
+
+.navbar-nav {
+    width: 40%;
+    text-align: center;
+}
+
+.divider-vertical {
+    height: 40px;
+    margin: 0 9px;
+    border-left: 1px solid #787878;
+    border-right: 1px solid #4b4b4b;
+}
+
+.svg_icon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+}
