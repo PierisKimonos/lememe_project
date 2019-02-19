@@ -1,5 +1,6 @@
 from django import template
-from lememe.models import Category
+from django.core.paginator import Paginator
+from lememe.models import Category, Comment
 
 register = template.Library()
 

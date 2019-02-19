@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required # login_required redirects to index if user is not logged in (see settings.py->)
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 
 # Import the category model
@@ -27,6 +28,19 @@ def index(request):
         keyword = request.GET.get("keyword",None)
         if keyword:
             context_dict["keyword"] = keyword
+
+        popular_posts = Post.objects.all()
+        page = request.GET.get('page', 1)
+
+        paginator = Paginator(popular_posts, 2)
+        try:
+            popular_posts = paginator.page(page)
+        except PageNotAnInteger:
+            popular_posts = paginator.page(1)
+        except EmptyPage:
+            popular_posts = paginator.page(paginator.num_pages)
+
+        context_dict["popular_posts"] = popular_posts
 
     # Call the helper function to handle the cookies
     # visitor_cookie_handler(request)

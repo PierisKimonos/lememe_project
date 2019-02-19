@@ -92,7 +92,7 @@
         </ul>
         <form class="form-inline my-0 my-lg-0" action="{% url 'lememe:index' %}" method="GET">
             <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}" required="required"
-                   placeholder="Search" aria-label="Search">
+                   placeholder="{% if keyword %}{{ keyword }}{% else %}Try searching something{% endif %}" aria-label="Search">
             <button class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img src="{% static 'icons/search.svg'%}"></button>
         </form>
     </div>
