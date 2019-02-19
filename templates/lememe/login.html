@@ -1,0 +1,31 @@
+{% extends 'lememe/base.html' %}
+{% load staticfiles %}
+
+
+
+
+{% block title_block %}
+    Login
+{% endblock %}
+
+{% block welcome_block %}
+    <h5 class="welcome_text">"Login to Lememe"</h5>
+{% endblock %}
+
+
+{% block body_block %}
+    <form id="login_form" method="post" action="{% url 'lememe:login' %}">
+        {% csrf_token %}
+        <div style="height: 1em;">
+            {% if invalid_username_password %}
+                <h3>{{ invalid_username_password }}</h3>
+            {% endif %}
+        </div>
+        <br />
+        Username: <input type="text" name="username" value="" size="50" />
+        <br />
+        Password: <input type="password" name="password" value="" size="50" />
+        <br />
+        <input type="submit" name="submit" value="submit">
+    </form>
+{% endblock %}

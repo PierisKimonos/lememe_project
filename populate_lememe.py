@@ -5,6 +5,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lememe_project.settings')
 import django
 django.setup()
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from django.core.files import File
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 
@@ -174,19 +175,37 @@ def create_superuser(username, password):
     return superuser
 
 
+# def add_user(username, password, firstname, surname, bio, email, website):
+#     user = User.objects.get_or_create(username=username, first_name=firstname, last_name=surname, email=email)[0]
+#     u = UserProfile.objects.get_or_create(user=user)[0]
+#     # u.first_name = firstname
+#     # u.last_name = surname
+#     u.password = password
+#     if u.picture.name != "%s.jpg"%username:
+#         image_path = os.path.join(PROJECT_DIR, 'population_images','profiles','%s.jpg'%username)
+#         u.picture.save("%s.jpg"%username, File(open(image_path, 'rb')))
+#     u.bio = bio
+#     # u.email = email
+#     u.website = website
+#     u.joined = datetime.now()
+#     u.save()
+#     return user
+
 def add_user(username, password, firstname, surname, bio, email, website):
-    user = User.objects.get_or_create(username=username, first_name=firstname, last_name=surname, email=email)[0]
+    # Start with User model first
+    user = User.objects.get_or_create(username=username)[0]
+    user.password = make_password(password)
+    user.email = email
+    user.first_name = firstname
+    user.last_name = surname
+    user.save()
+    # Then UserProfile model second
     u = UserProfile.objects.get_or_create(user=user)[0]
-    # u.first_name = firstname
-    # u.last_name = surname
-    u.password = password
     if u.picture.name != "%s.jpg"%username:
         image_path = os.path.join(PROJECT_DIR, 'population_images','profiles','%s.jpg'%username)
         u.picture.save("%s.jpg"%username, File(open(image_path, 'rb')))
     u.bio = bio
-    # u.email = email
     u.website = website
-    u.joined = datetime.now()
     u.save()
     return user
 
