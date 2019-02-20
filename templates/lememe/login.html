@@ -2,30 +2,213 @@
 {% load staticfiles %}
 
 
-
-
 {% block title_block %}
-    Login
+Login
 {% endblock %}
-
-{% block welcome_block %}
-    <h5 class="welcome_text">"Login to Lememe"</h5>
-{% endblock %}
-
 
 {% block body_block %}
-    <form id="login_form" method="post" action="{% url 'lememe:login' %}">
-        {% csrf_token %}
-        <div style="height: 1em;">
-            {% if invalid_username_password %}
-                <h3>{{ invalid_username_password }}</h3>
-            {% endif %}
+<style>
+    :root {
+        --input-padding-x: 1.5rem;
+        --input-padding-y: 0.75rem;
+    }
+
+    .login,
+    .image {
+        max-height: 100%;
+    }
+
+    .bg-image {
+        background-image: url('https://source.unsplash.com/WEQbe2jBg40/600x1200');
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+        background-position: top;
+    }
+
+    .login-heading {
+        font-weight: 300;
+    }
+
+    .btn-login {
+        font-size: 0.9rem;
+        letter-spacing: 0.05rem;
+        padding: 0.75rem 1rem;
+        border-radius: 2rem;
+    }
+
+    .form-label-group {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+
+    .form-label-group > input,
+    .form-label-group > label {
+        padding: var(--input-padding-y) var(--input-padding-x);
+        height: auto;
+        border-radius: 2rem;
+    }
+
+    .form-label-group > label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        margin-bottom: 0;
+        /* Override default `<label>` margin */
+        line-height: 1.5;
+        color: #495057;
+        cursor: text;
+        /* Match the input under the label */
+        border: 1px solid transparent;
+        border-radius: .25rem;
+        transition: all .1s ease-in-out;
+    }
+
+    .form-label-group input::-webkit-input-placeholder {
+        color: transparent;
+    }
+
+    .form-label-group input:-ms-input-placeholder {
+        color: transparent;
+    }
+
+    .form-label-group input::-ms-input-placeholder {
+        color: transparent;
+    }
+
+    .form-label-group input::-moz-placeholder {
+        color: transparent;
+    }
+
+    .form-label-group input::placeholder {
+        color: transparent;
+    }
+
+    .form-label-group input:not(:placeholder-shown) {
+        padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+        padding-bottom: calc(var(--input-padding-y) / 3);
+    }
+
+    .form-label-group input:not(:placeholder-shown) ~ label {
+        padding-top: calc(var(--input-padding-y) / 3);
+        padding-bottom: calc(var(--input-padding-y) / 3);
+        font-size: 12px;
+        color: #777;
+    }
+
+    .center-object {
+        margin-top: 100px;
+    }
+
+    .login-tabs-text {
+        font-family: inherit;
+        font-weight: bold;
+    }
+</style>
+<div class="container-fluid center-object">
+    <div class="row no-gutter justify-content-center">
+        <div class="col-sm-7 col-md-6 col-lg-5 col-xl-4">
+            <ul class="nav nav-pills justify-content-end" id="myTab" role="tablist">
+                <li class="nav-item w-50 text-center bg-secondary rounded-top">
+                    <a id="Login_tab" class="nav-link text-white login-tabs-text active" data-toggle="tab"
+                       href="#login_pane" role="tab"
+                       aria-controls="login_pane"
+                       aria-selected="true">Login</a>
+                </li>
+                <li class="nav-item w-50 text-center bg-secondary rounded-top">
+                    <a id="Register_tab" class="nav-link text-white login-tabs-text" data-toggle="tab"
+                       href="#register_pane" role="tab"
+                       aria-controls="register_pane"
+                       aria-selected="false">Register</a>
+                </li>
+            </ul>
+            <div class="tab-content container rounded-bottom bg-white shadow-lg mx-auto p-4 align-items-center"
+                 id="myTabContent">
+                <div class="tab-pane fade show active" id="login_pane" role="tabpanel" aria-labelledby="Login-tab">
+                    <div class="login d-flex align-top justify-content-center">
+                        <div class="row">
+                            <div class="">
+                                <div class="container-fluid">
+                                    <h3 class="row justify-content-center login-heading mb-4 text-center">Welcome
+                                        back to</h3>
+                                    <a class="row justify-content-center" href="{% url 'lememe:index' %}">
+                                        <img id="lememe_logo" src="{% static 'images\lememe_logo_black.svg' %}"
+                                             style="height: 50px">
+                                    </a>
+                                </div>
+                                <form id="login_form" method="post" action="{% url 'lememe:login' %}">
+                                    {% csrf_token %}
+                                    <div style="height: 1em;">
+                                        {% if invalid_username_password %}
+                                        <h3>{{ invalid_username_password }}</h3>
+                                        {% endif %}
+                                    </div>
+                                    <br/>
+                                    <div class="form-label-group">
+                                        <input type="text" id="inputUsername" class="form-control"
+                                               placeholder="Username" name="username" value="" size="50"
+                                               required autofocus>
+                                        <label for="inputUsername">Username</label>
+                                    </div>
+                                    <div class="form-label-group">
+                                        <input type="password" id="inputPassword" class="form-control"
+                                               placeholder="Password" required name="password" value="" size="50">
+                                        <label for="inputPassword">Password</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox mb-3">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">Remember
+                                            password</label>
+                                    </div>
+                                    <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2"
+                                            type="submit" name="submit" value="submit">Sign in
+                                    </button>
+                                    <div class="flex-c p-b-112">
+                                        <a href="#" class="login100-social-item">
+                                            <i class="fa fa-facebook-f"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-login shadow-sm rounded-pill">
+                                            <img src="{% static 'icons/btn_google_light_normal_ios.svg' %}"
+                                                 alt="GOOGLE">
+                                        </a>
+                                        <div class="btn">
+                                            <a class="small" href="">Not a lememe member? Register now!</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="register_pane" role="tabpanel" aria-labelledby="register-tab">
+                    <h1>Register for Lememe</h1>
+                    {% if registered %}
+                    Lememe says: <strong>thank you for registering!</strong>
+                    <a href="{% url 'lememe:index' %}">Return to the homepage.</a><br/>
+                    {% else %}
+                    Lememe says: <strong>register here!</strong><br/>
+                    <form id="user_form" method="post" action="{% url 'lememe:register' %}"
+                          enctype="multipart/form-data">
+
+                        {% csrf_token %}
+                        <!-- Display each form -->
+                        {# the as_p template function on the user_form and profile_form wraps#}
+                        {# each element in the form in a paragraph (denoted by the <p> HTML tag). This ensures that
+                        each#}
+                        {# element appears on a new line.#}
+                        {{ user_form.as_p }}
+                        {{ profile_form.as_p }}
+
+                        <!-- Provide a button to click to submit the form. -->
+                        <input type="submit" name="submit" value="Register"/>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <br />
-        Username: <input type="text" name="username" value="" size="50" />
-        <br />
-        Password: <input type="password" name="password" value="" size="50" />
-        <br />
-        <input type="submit" name="submit" value="submit">
-    </form>
+    </div>
+</div>
 {% endblock %}

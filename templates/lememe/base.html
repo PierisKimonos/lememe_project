@@ -11,7 +11,7 @@
 
     <title id="title_elem">
         {% block title_block %}
-            Lememe
+        Lememe
         {% endblock %}
     </title>
 
@@ -41,15 +41,16 @@
 
 </head>
 <body class="radial-gradient">
-    <div>
-        {% block welcome_block %}
-        {% endblock %}
-    </div>
+<div>
+    {% block welcome_block %}
+    {% endblock %}
+</div>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="{% url 'lememe:index' %}">
         <img id="lememe_logo" src="{% static 'images\lememe_logo.svg' %}">
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -72,7 +73,10 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown01"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ user.username.capitalize }}<div class="photo" style="margin-left: 10px"><img src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"></div></a>
+                    {{ user.username.capitalize }}
+                    <div class="photo" style="margin-left: 10px"><img
+                            src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"></div>
+                </a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
                     <a class="dropdown-item" href="">Profile</a>
                     <a class="dropdown-item" href="">Upload</a>
@@ -83,7 +87,9 @@
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'lememe:login' %}">Login</a>
+
+                <a class="nav-link" href="{% url 'lememe:login' %}"><img src="{% static 'icons/key.svg' %}"
+                                                                         style="fill: white"> Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'lememe:register' %}">Register</a>
@@ -91,38 +97,57 @@
             {% endif %}
         </ul>
         <form class="form-inline my-0 my-lg-0" action="{% url 'lememe:index' %}" method="GET">
-            <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}" required="required"
-                   placeholder="{% if keyword %}{{ keyword }}{% else %}Try searching something{% endif %}" aria-label="Search">
-            <button class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img src="{% static 'icons/search.svg'%}"></button>
+            <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}"
+                   required="required"
+                   placeholder="{% if keyword %}{{ keyword }}{% else %}Try searching something{% endif %}"
+                   aria-label="Search">
+            <button class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img
+                    src="{% static 'icons/search.svg'%}"></button>
         </form>
     </div>
 </nav>
-    <main role="main" class="container">
-        <div class="main_body">
-            {% block body_block %}
-            <div class="shadow-lg p-3 mb-5 bg-white rounded">
+{% block body_block %}
+<main role="main" class="container">
+    <div class="main_body">
+        {% block main_block %}
+        <div class="shadow-lg p-3 mb-5 bg-white rounded">
 
-                <!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
-                3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        {% block sidebar_block %}
-                        {% get_category_list category %}
-                        {% endblock %}
-                    </div>
-                    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
-                        {% block rightbody_block %}
-                        {% endblock %}
-                    </div>
+            <!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
+            3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    {% block sidebar_block %}
+                    {% get_category_list category %}
+                    {% endblock %}
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+                    {% block rightbody_block %}
+                    {% endblock %}
                 </div>
             </div>
-            {% endblock %}
         </div>
-        <br>
+        {% endblock %}
+    </div>
+    <br>
+    {% endblock %}
 
 </main><!-- /.container -->
 <script src="{% static 'js/customscripts.js' %}"></script>
 <script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
 <script>window.jQuery || document.write('<script src="static/js/jquery-3.3.1.slim.min.js"><\/script>')</script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-</body></html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".category-item").hover(function () {
+                $(this).css('color', 'white');
+                $(this).animate({paddingLeft: '+=30px'}, 200);
+            },
+            function () {
+                $(this).css('color', 'blue');
+                $(this).animate({paddingLeft: '-=30px'}, 200);
+            });
+    });
+</script>
+</body>
+</html>

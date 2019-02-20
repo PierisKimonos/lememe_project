@@ -1,4 +1,4 @@
-    i = true;
+i = true;
 function myFunction() {
     title_elem = document.getElementById("title_elem");
     if (i == true) {
