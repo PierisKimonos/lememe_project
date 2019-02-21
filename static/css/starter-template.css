@@ -64,3 +64,23 @@ body {
   vertical-align: text-top;
   fill: currentColor;
 }
+
+.category-item {
+    cursor: pointer;
+    height: 60px;
+}
+
+.image-cropper {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.category_pic {
+    background-color: black;
+    display: inline;
+    margin: 0 auto;
+    width: 100%;
+}

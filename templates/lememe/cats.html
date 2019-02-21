@@ -6,15 +6,37 @@
         {% if cats %}
         {% for c in cats %}
         {% if c == act_cat %}
-        <li class="list-group-item category-item">
-            <strong>
-                <a href="{% url 'lememe:show_category' c.slug %}">{{ c.name }}</a>
-            </strong>
+        <li class="list-group-item container justify-content-between category-item">
+            <div class="row">
+                <div class="col-3">
+                    <div class="image-cropper ml-3">
+                        <img class="category_pic"
+                             src="https://i.pinimg.com/originals/52/fe/c5/52fec54732ea8fa383f614f447aec4ac.jpg">
+                    </div>
+                </div>
+                <div class="col-9 mx-auto my-auto">
+                    <strong>
+                        <a class="text-dark" href="{% url 'lememe:show_category' c.slug %}">{{ c.name }}</a>
+                    </strong>
+                </div>
+            </div>
         </li>
+
         {% else %}
-        <li class="list-group-item category-item">
-            <a href="{% url 'lememe:show_category' c.slug %}">{{ c.name }}</a>
+        <li class="list-group-item container justify-content-between category-item">
+            <div class="row">
+                <div class="col-3">
+                    <div class="image-cropper ml-3">
+                        <img class="category_pic"
+                             src="https://i.pinimg.com/originals/52/fe/c5/52fec54732ea8fa383f614f447aec4ac.jpg">
+                    </div>
+                </div>
+                <div class="col-9 mx-auto my-auto">
+                    <a class="text-dark" href="{% url 'lememe:show_category' c.slug %}">{{ c.name }}</a>
+                </div>
+            </div>
         </li>
+
         {% endif %}
         {% endfor %}
         {% else %}

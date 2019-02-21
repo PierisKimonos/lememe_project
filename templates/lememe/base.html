@@ -75,7 +75,8 @@
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ user.username.capitalize }}
                     <div class="photo" style="margin-left: 10px"><img
-                            src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"></div>
+                            src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"
+                            onerror="this.src='{% static 'images/placeholder_profile.png' %}'"></div>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
                     <a class="dropdown-item" href="">Profile</a>
@@ -140,13 +141,16 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(".category-item").hover(function () {
-                $(this).css('color', 'white');
-                $(this).animate({paddingLeft: '+=30px'}, 200);
+                $(this).css('background-color', '#ddd');
             },
             function () {
-                $(this).css('color', 'blue');
-                $(this).animate({paddingLeft: '-=30px'}, 200);
+                $(this).css('background', 'white');
             });
+        $('.list-group-item').click(function () {
+            $(this).css("background-color", "#09f");
+            var url = $('a', this).attr('href');
+            window.location.href = url;
+        })
     });
 </script>
 </body>

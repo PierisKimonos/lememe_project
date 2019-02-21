@@ -266,3 +266,9 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('index'))
 
 
+def post(request):
+
+    if request.method == "POST":
+
+
+    # show ost stuff
