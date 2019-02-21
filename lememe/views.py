@@ -87,7 +87,7 @@ def show_category(request, category_name_slug):
     return render(request, 'lememe/category.html', context_dict)
 
 def about(request):
-    return HttpResponse("About page works!")
+    return render(request, 'lememe/about.html', {})
 
 def contact(request):
     return HttpResponse("Contact page works!")
