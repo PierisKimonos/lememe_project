@@ -264,11 +264,3 @@ def user_logout(request):
     logout(request)
     # Take the user back to the homepage.
     return HttpResponseRedirect(reverse('index'))
-
-
-def post(request):
-
-    if request.method == "POST":
-
-
-    # show ost stuff
