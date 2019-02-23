@@ -113,13 +113,13 @@ Login
         <div class="col-sm-7 col-md-6 col-lg-5 col-xl-4">
             <ul class="nav nav-pills justify-content-end" id="myTab" role="tablist">
                 <li class="nav-item w-50 text-center bg-secondary rounded-top">
-                    <a id="Login_tab" class="nav-link text-white login-tabs-text active" data-toggle="tab"
+                    <a id="Login_tab" class="nav-link text-white login-tabs-text{% if register_form != True %} active{% endif %}" data-toggle="tab"
                        href="#login_pane" role="tab"
                        aria-controls="login_pane"
                        aria-selected="true">Login</a>
                 </li>
                 <li class="nav-item w-50 text-center bg-secondary rounded-top">
-                    <a id="Register_tab" class="nav-link text-white login-tabs-text" data-toggle="tab"
+                    <a id="Register_tab" class="nav-link text-white login-tabs-text{% if register_form == True %} active{% endif %}" data-toggle="tab"
                        href="#register_pane" role="tab"
                        aria-controls="register_pane"
                        aria-selected="false">Register</a>
@@ -127,23 +127,23 @@ Login
             </ul>
             <div class="tab-content container rounded-bottom bg-white shadow-lg mx-auto p-4 align-items-center"
                  id="myTabContent">
-                <div class="tab-pane fade show active" id="login_pane" role="tabpanel" aria-labelledby="Login-tab">
+                <div class="tab-pane fade{% if register_form != True %} show active{% endif %}" id="login_pane" role="tabpanel" aria-labelledby="Login-tab">
                     <div class="login d-flex align-top justify-content-center">
                         <div class="row">
                             <div class="">
                                 <div class="container-fluid">
                                     <h3 class="row justify-content-center login-heading mb-4 text-center">Welcome
                                         back to</h3>
-                                    <a class="row justify-content-center" href="{% url 'lememe:index' %}">
+                                    <div class="row justify-content-center">
                                         <img id="lememe_logo" src="{% static 'images\lememe_logo_black.svg' %}"
                                              style="height: 50px">
-                                    </a>
+                                    </div>
                                 </div>
                                 <form id="login_form" method="post" action="{% url 'lememe:login' %}">
                                     {% csrf_token %}
-                                    <div style="height: 1em;">
-                                        {% if invalid_username_password %}
-                                        <h3>{{ invalid_username_password }}</h3>
+                                    <div class="text-justify" style="height: 1em;">
+                                        {% if login_error %}
+                                        <div class="text-danger">*{{ login_error }}</div>
                                         {% endif %}
                                     </div>
                                     <br/>
@@ -159,9 +159,8 @@ Login
                                         <label for="inputPassword">Password</label>
                                     </div>
                                     <div class="custom-control custom-checkbox mb-3">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                        <label class="custom-control-label" for="customCheck1">Remember
-                                            password</label>
+                                        <input type="checkbox" class="custom-control-input" name="remember_me" id="customCheck1" checked>
+                                        <label class="custom-control-label" for="customCheck1">Remember me</label>
                                     </div>
                                     <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2"
                                             type="submit" name="submit" value="submit">Sign in
@@ -183,7 +182,7 @@ Login
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="register_pane" role="tabpanel" aria-labelledby="register-tab">
+                <div class="tab-pane fade{% if register_form == True %} show active{% endif %}" id="register_pane" role="tabpanel" aria-labelledby="register-tab">
                     <h1>Register for Lememe</h1>
                     {% if registered %}
                     Lememe says: <strong>thank you for registering!</strong>
@@ -196,8 +195,7 @@ Login
                         {% csrf_token %}
                         <!-- Display each form -->
                         {# the as_p template function on the user_form and profile_form wraps#}
-                        {# each element in the form in a paragraph (denoted by the <p> HTML tag). This ensures that
-                        each#}
+                        {# each element in the form in a paragraph (denoted by the <p> HTML tag). This ensures that each#}
                         {# element appears on a new line.#}
                         {{ user_form.as_p }}
                         {{ profile_form.as_p }}

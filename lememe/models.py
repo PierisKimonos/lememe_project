@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from lememe.storage import OverwriteStorage
 
 
-## from lememe.models import UserProfile, Post, Comment, Preference, Category
-
 def get_user_image_folder(instance, filename):
     name = instance.user.username
     filename = "%s_profile_pic%s"%(name,filename[filename.find('.'):])
