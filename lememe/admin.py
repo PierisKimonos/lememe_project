@@ -6,7 +6,7 @@ from lememe.models import UserProfile, Post, Comment, Preference, Category
 #     list_display = ('title', 'category', 'url')
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('id','title','category','user','image','date')
+    list_display = ('id', 'title', 'category', 'user', 'image', 'date')
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -14,10 +14,15 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id','text','post','user','date')
+    list_display = ('id', 'text', 'post', 'user', 'date')
+
+
+class PreferenceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'post', 'liked')
 
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(Comment,CommentAdmin)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(UserProfile)
+admin.site.register(Preference, PreferenceAdmin)
