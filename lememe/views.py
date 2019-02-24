@@ -55,6 +55,16 @@ def index(request):
     # Return response back to user, updating any cookies that need changed.
     return response
 
+
+def post(request, post_id):
+    context_dict = {}
+    post = Post.objects.get(id = post_id)
+    comments = Comment.objects.filter(post=post)
+    context_dict['post'] = post
+    context_dict['comments'] = comments
+    return render(request, 'lememe/post.html', context_dict)
+
+
 def show_category(request, category_name_slug):
     # create a context dictionary which we
     # can pass to the template rendering engine
