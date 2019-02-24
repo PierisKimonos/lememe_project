@@ -5,70 +5,54 @@
 About
 {% endblock%}
 
-{% block body_block %}
-<main role="main" class="container">
-    <div class="main_body">
-        <div class="shadow-lg p-3 mb-5 bg-white rounded">
+{% block main_block %}
+<!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
+3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        About page says
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
 
-            <!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
-            3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    About page says
-                </div>
-                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
-
-                </div>
-
-            </div>
-             <div id="myCarousel" class="carousel slide" data-ride="carousel">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-      <li data-target="#myCarousel" data-slide-to="1"></li>
-      <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
-
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-      <div class="item active">
-        <img src="{% %}" alt="Los Angeles" style="width:100%;">
-        <div class="carousel-caption">
-          <h3>New York</h3>
-          <p>We love the Big Apple!</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <img src="..//s.jpg" alt="Chicago" style="width: 100%;">
-        <div class="carousel-caption">
-          <h3>New York</h3>
-          <p>We love the Big Apple!</p>
-        </div>
-      </div>
-
-      <div class="item">
-        <img src="{% static 'newyork.jpg' %}" alt="New york" style="width:100%">
-        <div class="carousel-caption">
-          <h3>New York</h3>
-          <p>We love the Big Apple!</p>
-        </div>
-      </div>
     </div>
 
-    <!-- Left and right controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-      <span class="glyphicon glyphicon-chevron-left"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-      <span class="glyphicon glyphicon-chevron-right"></span>
-      <span class="sr-only">Next</span>
-    </a>
-  </div>
 </div>
-
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox" style=" width:100%; height: 500px !important;">
+        <div class="carousel-item active">
+            <img class="d-block w-100" src="{%static 'images/newyork.jpg'%}" alt="First slide">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>First Slide</h5>
+                <p>Hello</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="{%static 'images/chicago.jpg'%}" alt="Second slide">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Second Slide</h5>
+                <p>World</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="{%static 'images/losangeles.jpg'%}" alt="Third slide">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Third Slide</h5>
+                <p>!</p>
+            </div>
         </div>
     </div>
-</main>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
 {% endblock %}

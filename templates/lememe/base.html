@@ -110,8 +110,9 @@
 {% block body_block %}
 <main role="main" class="container">
     <div class="main_body">
-        {% block main_block %}
         <div class="shadow-lg p-3 mb-5 bg-white rounded">
+        {% block main_block %}
+
 
             <!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
             3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
@@ -126,8 +127,8 @@
                     {% endblock %}
                 </div>
             </div>
-        </div>
         {% endblock %}
+        </div>
     </div>
     <br>
     {% endblock %}
@@ -152,6 +153,25 @@
             window.location.href = url;
         })
     });
+</script>
+<script>
+    $(document).ready(function () {
+        // Prepare the preview for profile picture
+        $("#wizard-picture").change(function () {
+            readURL(this);
+        });
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 </body>
 </html>
