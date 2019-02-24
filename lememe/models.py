@@ -43,18 +43,24 @@ class Category(models.Model):
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    # users_who_liked = models.ManyToManyField(User, through='Preference', symmetrical=True)
     title = models.CharField(max_length=128)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     image = models.ImageField(storage=OverwriteStorage(),upload_to=get_post_image_folder, blank=True, verbose_name="Image")
-    # likes = models.IntegerField(default=0)
-    # dislikes = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
 
     class Meta:
         ordering = ('date',)
+
+    def get_total_preferences(self):
+        return Preference.objects.filter(post=self).count()
+
+    def get_rating(self):
+        likes = Preference.objects.filter(post=self, liked=True).count()
+        return likes / self.get_total_preferences()
+
 
 
 class Comment(models.Model):
@@ -81,9 +87,9 @@ class UserProfile(models.Model):
 
 
 class Preference(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    preference = models.BooleanField(blank=True) # True=Like, False=Dislike
+    liked = models.BooleanField(blank=True) # True=Like, False=Dislike
 
 
 ## NEED TO IMPLEMENT REPORTS
