@@ -6,7 +6,7 @@ from lememe.models import UserProfile, Post, Comment, Preference, Category
 #     list_display = ('title', 'category', 'url')
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'category', 'user', 'image', 'date')
+    list_display = ('id', 'client_id', 'title', 'category', 'user', 'image', 'date')
 
 
 class CategoryAdmin(admin.ModelAdmin):
