@@ -103,6 +103,9 @@ def about(request):
 def contact(request):
     return render(request, 'lememe/contact.html', {})
 
+def upload(request):
+    return render(request, 'lememe/upload.html', {})
+
 def register(request):
     # A boolean value for telling the template
     # whether the registration was successful.
