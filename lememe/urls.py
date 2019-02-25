@@ -16,8 +16,8 @@ urlpatterns = [
     url(r'^login/$', views.user_login, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^post/(?P<post_id>[\w]+)$', views.show_post, name='show_post'),
-    url(r'^user/(?P<username>[\w\-]+)/$', views.show_profile, name='show_profile'),
     url(r'^user/settings/$', views.show_settings, name='show_settings'),
+    url(r'^user/(?P<username>[\w\-]+)/$', views.show_profile, name='show_profile'),
     url(r'^feeling_lucky/$', views.feeling_lucky, name='feeling_lucky'),
     # url(r'^restricted/', views.restricted, name='restricted'),
 ]
