@@ -104,6 +104,7 @@ def about(request):
 def contact(request):
     return render(request, 'lememe/contact.html', {})
 
+
 def show_profile(request, username):
     return render(request, 'lememe/profile.html', {})
 
