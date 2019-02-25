@@ -1,4 +1,5 @@
 import os, random
+from parse_population_files import *
 from datetime import datetime
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lememe_project.settings')
 
@@ -41,55 +42,38 @@ def populate():
         "School": {"views": 128},
         "Sport": {"views": 128},}
 
-    posts = {
-        "maria": [
-            {"title": "Title for post 1",
-             "category": "Funny",
-             "image": "maria1.jpg"},
+    posts = parsePosts(os.path.join("population_files","posts.csv"))
+    # posts = {
+    #     "maria": [
+    #         {"title": "Title for post 1",
+    #          "category": "Funny",
+    #          "image": "maria1.jpg"},
+    #
+    #         {"title": "Title for post 2",
+    #          "category": "Funny",
+    #          "image": "maria2.jpg"},
+    #
+    #         {"title": "Title for post 3",
+    #          "category": "Funny",
+    #          "image": "maria3.jpg"},
+    #
+    #     ],
+    #     "john": [
+    #         {"title": "Title for post 1",
+    #          "category": "Politics",
+    #          "image": "john1.jpg"},
+    #
+    #         {"title": "Title for post 2",
+    #          "category": "Politics",
+    #          "image": "john2.jpg"},
+    #
+    #         {"title": "Title for post 3",
+    #          "category": "Politics",
+    #          "image": "john3.jpg"},
+    #     ],
+    # }
 
-            {"title": "Title for post 2",
-             "category": "Funny",
-             "image": "maria2.jpg"},
-
-            {"title": "Title for post 3",
-             "category": "Funny",
-             "image": "maria3.jpg"},
-
-        ],
-        "john": [
-            {"title": "Title for post 1",
-             "category": "Politics",
-             "image": "john1.jpg"},
-
-            {"title": "Title for post 2",
-             "category": "Politics",
-             "image": "john2.jpg"},
-
-            {"title": "Title for post 3",
-             "category": "Politics",
-             "image": "john3.jpg"},
-        ],
-    }
-
-    users = {"maria": {"password": "1111",
-                       "firstname": "Maria",
-                       "surname": "Smith",
-                       "bio": "Maria's Bio.",
-                       "email": "maria1234@lememe.com",
-                       "website": "www.maria1234.com",
-                       "posts": posts["maria"],
-                       # "comments": maria_comments,
-                       },
-             "john": {"password": "1111",
-                      "firstname": "John",
-                      "surname": "McDonald",
-                      "bio": "John's Bio.",
-                      "email": "john1234@lememe.com",
-                      "website": "www.john1234.com",
-                      "posts": posts["john"],
-                      # "comments": john_comments,
-                      }
-             }
+    users = parseUsers(os.path.join("population_files","users.csv"))
 
     #
     # comments = [
@@ -143,7 +127,7 @@ def populate():
                      user_data["email"],
                      user_data["website"])
         # need to add posts and then comments
-        for post in posts[user]:
+        for post in posts.get(user,[]):
             # If the category does not exist, allow the user to create it
             category = Category.objects.get(name=post["category"])
             p = add_post(u,
