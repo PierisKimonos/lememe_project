@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lememe',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # redirect users to that aren’t logged in to:
-LOGIN_URL = '/login/'
+LOGIN_URL = '/lememe/login/'
 
 
 # Internationalization

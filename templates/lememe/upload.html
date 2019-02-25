@@ -1,8 +1,9 @@
 {% extends 'lememe/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block title_block %}
-Contact Us
+Upload
 {% endblock%}
 
 
@@ -79,46 +80,149 @@ Contact Us
 
     /*Profile Pic End*/
 </style>
-<form method="post" action="">
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <select class="custom-select">
-                <option selected>Choose Category</option>
-                <option value="1">Animals</option>
-                <option value="2">Funny</option>
-                <option value="3"></option>
-            </select>
-            <br>
-            <br>
 
-            <div class="form-row">
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="Add Tittle">
-                </div>
-            </div>
+<!--<form method="post" novalidate>-->
 
-            <div class="form-group blue-border">
-                <textarea class="form-control" placeholder="Enter a description" rows="7"></textarea>
-            </div>
+  <!--{% for field in form.visible_fields %}-->
+    <!--<div class="form-group">-->
+      <!--{{ field.label_tag }}-->
 
+      <!--{% if form.is_bound %}-->
+        <!--{% if field.errors %}-->
+          <!--{% render_field field class="form-control is-invalid" %}-->
+          <!--{% for error in field.errors %}-->
+            <!--<div class="invalid-feedback">-->
+              <!--{{ error }}-->
+            <!--</div>-->
+          <!--{% endfor %}-->
+        <!--{% else %}-->
+          <!--{% render_field field class="form-control is-valid" %}-->
+        <!--{% endif %}-->
+      <!--{% else %}-->
+        <!--{% render_field field class="form-control" %}-->
+      <!--{% endif %}-->
 
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-            <div class="container">
-                <div class="picture-container">
-                    <h6 class="">Choose Picture</h6>
-                    <div class="picture">
-                        <img src="https://lh3.googleusercontent.com/LfmMVU71g-HKXTCP_QWlDOemmWg4Dn1rJjxeEsZKMNaQprgunDTtEuzmcwUBgupKQVTuP0vczT9bH32ywaF7h68mF-osUSBAeM6MxyhvJhG6HKZMTYjgEv3WkWCfLB7czfODidNQPdja99HMb4qhCY1uFS8X0OQOVGeuhdHy8ln7eyr-6MnkCcy64wl6S_S6ep9j7aJIIopZ9wxk7Iqm-gFjmBtg6KJVkBD0IA6BnS-XlIVpbqL5LYi62elCrbDgiaD6Oe8uluucbYeL1i9kgr4c1b_NBSNe6zFwj7vrju4Zdbax-GPHmiuirf2h86eKdRl7A5h8PXGrCDNIYMID-J7_KuHKqaM-I7W5yI00QDpG9x5q5xOQMgCy1bbu3St1paqt9KHrvNS_SCx-QJgBTOIWW6T0DHVlvV_9YF5UZpN7aV5a79xvN1Gdrc7spvSs82v6gta8AJHCgzNSWQw5QUR8EN_-cTPF6S-vifLa2KtRdRAV7q-CQvhMrbBCaEYY73bQcPZFd9XE7HIbHXwXYA=s200-no"
-                             class="picture-src" id="wizardPicturePreview" title="">
-                        <input type="file" id="wizard-picture" class="">
-                    </div>
+      <!--{% if field.help_text %}-->
+        <!--<small class="form-text text-muted">{{ field.help_text }}</small>-->
+      <!--{% endif %}-->
+    <!--</div>-->
+  <!--{% endfor %}-->
+
+  <!--<button type="submit" class="btn btn-primary">Submit</button>-->
+<!--</form>-->
 
 
-                </div>
-            </div>
-        </div>
+<form method="post" novalidate action="{% url 'lememe:upload' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for hidden_field in form.hidden_fields %}
+    {{ hidden_field }}
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
     </div>
-    <button type="submit" class="btn btn-primary mx-auto">Submit</button>
+    {% endif %}
+
+    <div class="form-group">
+        <div class="row">
+
+            <!--Left Side-->
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+
+                <!--Title input-->
+                <div class="form-row">
+                    {{ form.title.label_tag }}
+
+                    {% if form.is_bound %}
+                    {% if form.title.errors %}
+                    {% render_field form.title class="form-control is-invalid" %}
+                    {% for error in form.title.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    {% render_field form.title class="form-control is-valid" %}
+                    {% endif %}
+                    {% else %}
+                    {% render_field form.title class="form-control" %}
+                    {% endif %}
+
+                    {% if form.title.help_text %}
+                    <small class="form-text text-muted">{{ form.title.help_text }}</small>
+                    {% endif %}
+                </div>
+
+                <!--Category input-->
+                <div class="form-row">
+                    {{ form.category.label_tag }}
+
+                    {% if form.is_bound %}
+                    {% if form.category.errors %}
+                    {% render_field form.category class="form-control custom-select is-invalid" %}
+                    {% for error in form.category.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    {% render_field form.category class="form-control custom-select is-valid" %}
+                    {% endif %}
+                    {% else %}
+                    {% render_field form.category class="form-control custom-select" %}
+                    {% endif %}
+
+                    {% if form.category.help_text %}
+                    <small class="form-text text-muted">{{ form.category.help_text }}</small>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <!--Right side-->
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+
+                <!--Image input-->
+                <div class="form-row">
+
+                    {{ form.image.label_tag }}
+
+                    <div class="container">
+                        <div class="picture-container">
+                            <h6 class="">Choose Picture</h6>
+                            <div class="picture">
+                                <img src="https://lh3.googleusercontent.com/LfmMVU71g-HKXTCP_QWlDOemmWg4Dn1rJjxeEsZKMNaQprgunDTtEuzmcwUBgupKQVTuP0vczT9bH32ywaF7h68mF-osUSBAeM6MxyhvJhG6HKZMTYjgEv3WkWCfLB7czfODidNQPdja99HMb4qhCY1uFS8X0OQOVGeuhdHy8ln7eyr-6MnkCcy64wl6S_S6ep9j7aJIIopZ9wxk7Iqm-gFjmBtg6KJVkBD0IA6BnS-XlIVpbqL5LYi62elCrbDgiaD6Oe8uluucbYeL1i9kgr4c1b_NBSNe6zFwj7vrju4Zdbax-GPHmiuirf2h86eKdRl7A5h8PXGrCDNIYMID-J7_KuHKqaM-I7W5yI00QDpG9x5q5xOQMgCy1bbu3St1paqt9KHrvNS_SCx-QJgBTOIWW6T0DHVlvV_9YF5UZpN7aV5a79xvN1Gdrc7spvSs82v6gta8AJHCgzNSWQw5QUR8EN_-cTPF6S-vifLa2KtRdRAV7q-CQvhMrbBCaEYY73bQcPZFd9XE7HIbHXwXYA=s200-no"
+                                     class="picture-src" id="ImagePreview" title="">
+                                {% if form.is_bound %}
+                                {% if form.image.errors %}
+                                {% render_field form.image class="form-control is-invalid" %}
+                                {% for error in form.image.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                {% render_field form.image class="form-control is-valid" %}
+                                {% endif %}
+                                {% else %}
+                                {% render_field form.image class="form-control" %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if form.image.help_text %}
+                    <small class="form-text text-muted">{{ form.image.help_text }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mx-auto">Submit</button>
+    </div>
 </form>
 
 {% endblock %}

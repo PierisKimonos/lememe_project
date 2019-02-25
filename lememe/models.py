@@ -1,6 +1,8 @@
+import uuid
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from lememe.storage import OverwriteStorage
 
 
@@ -37,16 +39,31 @@ class Category(models.Model):
         return self.name.lower() > other.name.lower()
 
     def __eq__(self, other):
-        return self.name == other.name
-
+        try:
+            return self.name == other.name # other might be of type None
+        except:
+            return False
 
 class Post(models.Model):
+    client_id = models.CharField(primary_key=False,max_length=8,default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     image = models.ImageField(storage=OverwriteStorage(),upload_to=get_post_image_folder, blank=True, verbose_name="Image")
     views = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if self.client_id:
+            super(Post, self).save(*args, **kwargs)
+            return
+
+        newid = uuid.uuid4().hex[:8]
+        while Post.objects.filter(client_id=newid).count() != 0:
+            newid = uuid.uuid4().hex[:8]
+
+        self.client_id = newid
+        super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
