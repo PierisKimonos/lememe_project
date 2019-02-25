@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 # Import the forms
-from lememe.forms import UserForm, UserProfileForm
+from lememe.forms import UserForm, UserProfileForm, PostForm
 
 def index(request):
     # Query the database for a list of ALL categories currently stored.
@@ -103,8 +103,57 @@ def about(request):
 def contact(request):
     return render(request, 'lememe/contact.html', {})
 
+# @login_required
+# def upload(request):
+#     print("==========>>>>>>>>  here")
+#     form = PostForm()
+#     print("after postform =================")
+#
+#     if request.method == 'POST':
+#         print("Inside POST ===============")
+#         form = PostForm(request.POST)
+#         print("++++++++++++++++++++++",form,type(form))
+#
+#         if form.is_valid():
+#             # post = form.save(commit=False)
+#             # post.user = request.user
+#             # post.views = 0
+#             post.save() # client_id is assigned in .save()
+#             return post(request, post.id)
+#
+#         else:
+#             print(form.errors)
+#
+#     print("Above Context Dict ===============")
+#     context_dict = {'form': form}
+#     return render(request, 'lememe/upload.html', context_dict)
+
 def upload(request):
-    return render(request, 'lememe/upload.html', {})
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = PostForm(request.POST)
+
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            post = form.save(commit=False)
+            post.user = request.user
+
+            # We also need to store the uploaded image file
+            if 'image' in request.FILES:
+                post.image = request.FILES['image']
+            post.save()
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse(post, args={"post_id": post.id}))
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = PostForm()
+
+    return render(request, 'lememe/upload.html', {'form': form})
+
 
 def register(request):
     # A boolean value for telling the template

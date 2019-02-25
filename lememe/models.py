@@ -39,8 +39,10 @@ class Category(models.Model):
         return self.name.lower() > other.name.lower()
 
     def __eq__(self, other):
-        return self.name == other.name
-
+        try:
+            return self.name == other.name # other might be of type None
+        except:
+            return False
 
 class Post(models.Model):
     client_id = models.CharField(primary_key=False,max_length=8,default=None)
