@@ -1,4 +1,5 @@
 import os, random
+from parse_population_files import *
 from datetime import datetime
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lememe_project.settings')
 
@@ -71,25 +72,7 @@ def populate():
         ],
     }
 
-    users = {"maria": {"password": "1111",
-                       "firstname": "Maria",
-                       "surname": "Smith",
-                       "bio": "Maria's Bio.",
-                       "email": "maria1234@lememe.com",
-                       "website": "www.maria1234.com",
-                       "posts": posts["maria"],
-                       # "comments": maria_comments,
-                       },
-             "john": {"password": "1111",
-                      "firstname": "John",
-                      "surname": "McDonald",
-                      "bio": "John's Bio.",
-                      "email": "john1234@lememe.com",
-                      "website": "www.john1234.com",
-                      "posts": posts["john"],
-                      # "comments": john_comments,
-                      }
-             }
+    users = parseUsers(os.path.join("population_files","users.csv"))
 
     #
     # comments = [
