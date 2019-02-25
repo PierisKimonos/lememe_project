@@ -1,0 +1,38 @@
+{% extends 'lememe/base.html' %}
+{% load staticfiles %}
+
+
+{% block rightbody_block %}
+
+<div class="container">
+    <div class="card border-5 shadow">		
+		<div class= "card-body">
+			<div class="row">
+				<div class="col-sm-6">
+					<img src="{{ MEDIA_URL }}{{profile.picture}}" class="rounded-circle img-thumbnail shadow" >
+					<div><br>
+					</div>
+					<p class="font-italic">"{{profile.bio}}"</p>
+				</div>
+				<div class="col-sm-6"> 
+					<div class="container">
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item">{{profile.user}}</li>
+								<li class="list-group-item">{{user.email}}</li>
+								<li class="list-group-item">{{profile.website}}</li>
+								<li class="list-group-item"></li>
+								<li class="list-group-item">Fourth item</li>
+								<li class="list-group-item">Fourth item</li>
+						</ul>
+					</div>
+
+
+					
+				</div>	
+			</div>					
+		</div>		
+    </div>
+
+
+
+{% endblock %}

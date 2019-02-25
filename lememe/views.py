@@ -1,4 +1,5 @@
 from datetime import datetime
+import random
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required # login_required redirects to index if user is not logged in (see settings.py->)
 from django.http import HttpResponse, HttpResponseRedirect
@@ -56,7 +57,7 @@ def index(request):
     return response
 
 
-def post(request, post_id):
+def show_post(request, post_id):
     context_dict = {}
     post = Post.objects.get(id = post_id)
     comments = Comment.objects.filter(post=post)
@@ -103,31 +104,20 @@ def about(request):
 def contact(request):
     return render(request, 'lememe/contact.html', {})
 
-# @login_required
-# def upload(request):
-#     print("==========>>>>>>>>  here")
-#     form = PostForm()
-#     print("after postform =================")
-#
-#     if request.method == 'POST':
-#         print("Inside POST ===============")
-#         form = PostForm(request.POST)
-#         print("++++++++++++++++++++++",form,type(form))
-#
-#         if form.is_valid():
-#             # post = form.save(commit=False)
-#             # post.user = request.user
-#             # post.views = 0
-#             post.save() # client_id is assigned in .save()
-#             return post(request, post.id)
-#
-#         else:
-#             print(form.errors)
-#
-#     print("Above Context Dict ===============")
-#     context_dict = {'form': form}
-#     return render(request, 'lememe/upload.html', context_dict)
 
+def show_profile(request, username):
+    return render(request, 'lememe/profile.html', {})
+
+def show_settings(request):
+    return render(request, 'lememe/settings.html', {})
+
+def feeling_lucky(request):
+
+    # pick a post at random and display it
+    random_post = random.choice(Post.objects.all())
+    return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.id]))
+
+@login_required
 def upload(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -145,7 +135,7 @@ def upload(request):
                 post.image = request.FILES['image']
             post.save()
             # redirect to a new URL:
-            return HttpResponseRedirect(reverse(post, args={"post_id": post.id}))
+            return HttpResponseRedirect(reverse('lememe:show_post', args=[post.id]))
 
 
     # if a GET (or any other method) we'll create a blank form

@@ -29,7 +29,7 @@ class PostForm(forms.ModelForm):
         # This way we don't need every field in the model present.
         # Some fields may allow NULL values, so we may not want to include them.
         # exclude = ["category",]
-        exclude = ('client_id','id','date','user',)
+        exclude = ('client_id','id','date','user','views')
         # exclude = []
         # fields = (
         #     'title',
