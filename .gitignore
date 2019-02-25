@@ -3,6 +3,7 @@ db.sqlite3
 
 # Media Files
 media/
+lememe/migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
