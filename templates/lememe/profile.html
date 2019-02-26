@@ -15,22 +15,69 @@
 					<p class="font-italic">"{{profile.bio}}"</p>
 				</div>
 				<div class="col-sm-6"> 
-					<div class="container">
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item">{{profile.user}}</li>
-								<li class="list-group-item">{{user.email}}</li>
-								<li class="list-group-item">{{profile.website}}</li>
-								<li class="list-group-item"></li>
-								<li class="list-group-item">Fourth item</li>
-								<li class="list-group-item">Fourth item</li>
-						</ul>
-					</div>
 
-
-					
+						<ul class="list-group list-group-flush text-left">
+							<li class="list-group-item">Name: {{profile.user}}</li>
+								<li class="list-group-item">Email: {{user.email}}</li>
+								<li class="list-group-item">Website: {{profile.website}}</li>
+								<li class="list-group-item">Joined: {{user.date_joined}}</li>
+								<li class="list-group-item">Meme count: {{posts|length}}</li>
+						</ul>				
 				</div>	
 			</div>					
 		</div>		
+    </div><br>
+	
+	 <ul class="nav nav-pills" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="popular-tab" data-toggle="tab" href="#popular" role="tab"
+               aria-controls="popular"
+               aria-selected="true">{{profile.user}}'s memes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new"
+               aria-selected="false">{{profile.user}}'s liked memes</a>
+    </ul>
+    <hr>
+	
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="popular" role="tabpanel" aria-labelledby="home-tab">
+
+            {% for post in posts %}
+            <div class="card border-0 shadow">
+                <div class="card-header">{{post.title}}</div>
+                <img src="{{ MEDIA_URL }}{{post.image}}" class="card-img-top" alt="Post's Image">
+                <div class="card-body text-center">
+                    <div class="card-text text-black-50">{{post.user}}</div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if posts.has_other_pages %}
+            <ul class="pagination justify-content-center pt-4">
+                {% if posts.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">&laquo;</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+                {% for i in posts.paginator.page_range %}
+                {% if posts.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }} <span
+                        class="sr-only">(current)</span></span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if posts.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+        <div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="profile-tab">...</div>
     </div>
 
 

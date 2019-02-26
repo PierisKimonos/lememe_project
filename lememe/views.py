@@ -106,7 +106,14 @@ def contact(request):
 
 
 def show_profile(request, username):
-    return render(request, 'lememe/profile.html', {})
+    context_dict = {}
+    user = User.objects.get(username=username)
+    profile = UserProfile.objects.get(user=user)
+    posts = Post.objects.filter(user=user)
+    context_dict['user'] = user
+    context_dict['profile'] = profile
+    context_dict['posts'] = posts
+    return render(request, 'lememe/profile.html', context_dict)
 
 def show_settings(request):
     return render(request, 'lememe/settings.html', {})
