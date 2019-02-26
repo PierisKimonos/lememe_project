@@ -41,11 +41,12 @@ Home
             <!-- View for one post -->
             <div class="card border-0 shadow">
                 <div class="card-header">{{post.title}}</div>
-                <img src="{{ MEDIA_URL }}{{post.image}}" class="card-img-top" alt="Post's Image">
+				<a href="{% url 'lememe:show_post' post.client_id %}">
+                <img src="{{ MEDIA_URL }}{{post.image}}" class="card-img-top" alt="Post's Image"></a>
                 <div class="card-body text-center">
                     <div class="card-text text-black-50">{{post.user}}</div>
                 </div>
-            </div>
+            </div><br>
             {% endfor %}
 
             {% if popular_posts.has_other_pages %}
