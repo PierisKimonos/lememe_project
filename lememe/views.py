@@ -59,7 +59,7 @@ def index(request):
 
 def show_post(request, post_id):
     context_dict = {}
-    post = Post.objects.get(id = post_id)
+    post = Post.objects.get(client_id = post_id)
     comments = Comment.objects.filter(post=post)
     context_dict['post'] = post
     context_dict['comments'] = comments
@@ -122,7 +122,7 @@ def feeling_lucky(request):
 
     # pick a post at random and display it
     random_post = random.choice(Post.objects.all())
-    return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.id]))
+    return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.client_id]))
 
 @login_required
 def upload(request):
