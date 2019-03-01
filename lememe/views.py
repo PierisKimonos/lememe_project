@@ -178,7 +178,6 @@ def contact(request):
 
 def show_profile(request, username):
     context_dict = {}
-
     # In case no user with this username exists
     try:
         user = User.objects.get(username=username)
@@ -192,7 +191,6 @@ def show_profile(request, username):
     context_dict['user'] = user
     context_dict['profile'] = profile
     context_dict['posts'] = posts
-
     return render(request, 'lememe/profile.html', context_dict)
 
 def show_settings(request):
