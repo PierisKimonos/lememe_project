@@ -122,18 +122,19 @@ def ajax_create_comment(request,post_id):
 
 
 def show_post(request, post_id):
-    post = Post.objects.get(id=post_id)
     context_dict = {}
+    post = Post.objects.get(client_id=post_id)
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        comment(request,post)
+        comment(request, post)
 
     comments = Comment.objects.filter(post=post).order_by('-date')
     context_dict['post'] = post
     context_dict['comments'] = comments
     context_dict['comment_form'] = CommentForm()
     return render(request, 'lememe/post.html', context_dict)
+
 
 
 def show_category(request, category_name_slug):
@@ -176,11 +177,23 @@ def contact(request):
 
 
 def show_profile(request, username):
+    context_dict = {}
+
+    # In case no user with this username exists
     try:
-        user = User.objects.get(username)
+        user = User.objects.get(username=username)
+        profile = UserProfile.objects.get(user=user)
+        posts = Post.objects.filter(user=user)
     except:
         user = None
-    return render(request, 'lememe/profile.html', {'display_user': user})
+        posts = None
+        profile = None
+
+    context_dict['user'] = user
+    context_dict['profile'] = profile
+    context_dict['posts'] = posts
+
+    return render(request, 'lememe/profile.html', context_dict)
 
 def show_settings(request):
     return render(request, 'lememe/settings.html', {})
