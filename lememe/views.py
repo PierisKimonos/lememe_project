@@ -202,7 +202,7 @@ def feeling_lucky(request):
 
     # pick a post at random and display it
     random_post = random.choice(Post.objects.all())
-    return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.id]))
+    return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.client_id]))
 
 @login_required
 def upload(request):
