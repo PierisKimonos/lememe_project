@@ -15,6 +15,22 @@ from lememe.models import UserProfile, Post, Comment, Preference, Category
 #         model = Category
 #         fields = ('name',)
 
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ("text",)
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'id': 'comment-text',
+                'required': True,
+                'placeholder': 'Enter a comment...',
+                'rows': 1,
+                'cols': 69
+            }),
+        }
+
+
 class PostForm(forms.ModelForm):
     # title = forms.CharField(max_length=128, help_text="Please enter the title of the post.")
     # category = forms.ModelChoiceField(queryset=Category.objects.all(),help_text="Category")

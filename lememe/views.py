@@ -1,5 +1,5 @@
 from datetime import datetime
-import random
+import random, json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required # login_required redirects to index if user is not logged in (see settings.py->)
 from django.http import HttpResponse, HttpResponseRedirect
@@ -7,11 +7,14 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.staticfiles.templatetags.staticfiles import static
+
 
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 # Import the forms
-from lememe.forms import UserForm, UserProfileForm, PostForm
+from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm
 
 def index(request):
     # Query the database for a list of ALL categories currently stored.
@@ -57,13 +60,81 @@ def index(request):
     return response
 
 
+@login_required
+def comment(request,post):
+    # create a form instance and populate it with data from the request:
+    form = CommentForm(request.POST)
+
+    # check whether it's valid:
+    if form.is_valid():
+        # process the data in form.cleaned_data as required
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.post = post
+        comment.save()
+        # redirect to a new URL:
+        # return HttpResponseRedirect(reverse('lememe:show_post', args=[request.post.id]))
+    else:
+        form = CommentForm()
+
+@csrf_exempt
+def ajax_create_comment(request,post_id):
+    print("in ajax view")
+    # try:
+    post = Post.objects.get(id=post_id)
+    # except Post.DoesNotExist:
+    #     post = None
+
+    print("got the post")
+    if request.method == 'POST' and post is not None:
+        comment_text = request.POST.get('comment_text')
+        response_data = {}
+
+        comment = Comment.objects.create(text=comment_text, user=request.user, post=post)
+        comment.save()
+
+        response_data['result'] = 'Create post successful!'
+        response_data['commentpk'] = comment.pk
+        response_data['text'] = comment.text
+        response_data['created'] = comment.date.strftime('%b. %d, %Y, %I:%M %p')
+        response_data['user'] = comment.user.username
+        response_data['number_of_comments'] = int(Comment.objects.filter(post=post).count())
+        response_data['post'] = post.client_id
+
+        print("got here")
+        try:
+            # if user doesn't have a profile picture send the default pic url
+            user_profile = UserProfile.objects.get(user=comment.user)
+            response_data['user_pic_url'] = user_profile.picture.url
+        except UserProfile.DoesNotExist:
+            response_data['user_pic_url'] = static('images/placeholder_profile.png')
+
+
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
+
+
 def show_post(request, post_id):
     context_dict = {}
-    post = Post.objects.get(client_id = post_id)
-    comments = Comment.objects.filter(post=post)
+    post = Post.objects.get(client_id=post_id)
+
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        comment(request, post)
+
+    comments = Comment.objects.filter(post=post).order_by('-date')
     context_dict['post'] = post
     context_dict['comments'] = comments
+    context_dict['comment_form'] = CommentForm()
     return render(request, 'lememe/post.html', context_dict)
+
 
 
 def show_category(request, category_name_slug):
@@ -107,9 +178,16 @@ def contact(request):
 
 def show_profile(request, username):
     context_dict = {}
-    user = User.objects.get(username=username)
-    profile = UserProfile.objects.get(user=user)
-    posts = Post.objects.filter(user=user)
+    # In case no user with this username exists
+    try:
+        user = User.objects.get(username=username)
+        profile = UserProfile.objects.get(user=user)
+        posts = Post.objects.filter(user=user)
+    except:
+        user = None
+        posts = None
+        profile = None
+
     context_dict['user'] = user
     context_dict['profile'] = profile
     context_dict['posts'] = posts
