@@ -17,35 +17,44 @@ from lememe.models import UserProfile, Post, Comment, Preference, Category
 from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm
 
 def index(request):
-    # Query the database for a list of ALL categories currently stored.
-    # Order the categories by no. likes in descending order.
-    # Retrieve the top 5 only - or all if less than 5.
-    # Place the list in our context_dict dictionary
-    # that will be passed to the template engine.
-
-    # request.session.set_test_cookie() # inside the about view we check the test_cookie
-
-    # category_list = Category.objects.order_by("-likes")[:5]
-    # page_list = Page.objects.order_by("-views")[:5]
-    # context_dict = {'categories': category_list, "pages": page_list}
     context_dict = {}
     if request.method == "GET":
         keyword = request.GET.get("keyword",None)
         if keyword:
             context_dict["keyword"] = keyword
 
-        popular_posts = Post.objects.all()
-        page = request.GET.get('page', 1)
+        # Popular posts paging
+        popular_posts = Post.objects.all().order_by("-views")
+        popular_page = request.GET.get('popular_page', 1)
 
-        paginator = Paginator(popular_posts, 2)
+        popular_paginator = Paginator(popular_posts, 2)
         try:
-            popular_posts = paginator.page(page)
+            popular_posts = popular_paginator.page(popular_page)
         except PageNotAnInteger:
-            popular_posts = paginator.page(1)
+            popular_posts = popular_paginator.page(1)
         except EmptyPage:
-            popular_posts = paginator.page(paginator.num_pages)
+            popular_posts = popular_paginator.page(popular_paginator.num_pages)
 
         context_dict["popular_posts"] = popular_posts
+
+        # New posts paging
+        new_posts = Post.objects.all().order_by("-date")
+        new_page = request.GET.get('new_page', 1)
+
+        if request.GET.get('new_page') != None:
+            context_dict["activate_new_tab"] = True
+        else:
+            context_dict["activate_new_tab"] = False
+
+        new_paginator = Paginator(new_posts, 2)
+        try:
+            new_posts = new_paginator.page(new_page)
+        except PageNotAnInteger:
+            new_posts = new_paginator.page(1)
+        except EmptyPage:
+            new_posts = new_paginator.page(new_paginator.num_pages)
+
+        context_dict["new_posts"] = new_posts
 
     # Call the helper function to handle the cookies
     # visitor_cookie_handler(request)
@@ -222,7 +231,7 @@ def upload(request):
                 post.image = request.FILES['image']
             post.save()
             # redirect to a new URL:
-            return HttpResponseRedirect(reverse('lememe:show_post', args=[post.id]))
+            return HttpResponseRedirect(reverse('lememe:show_post', args=[post.client_id]))
 
 
     # if a GET (or any other method) we'll create a blank form
