@@ -1,5 +1,6 @@
 import csv
 
+
 def parseUsers(filename):
     if type(filename) != str:
         raise ValueError("Input must be a string")
@@ -46,3 +47,26 @@ def parsePosts(filename):
     except:
         raise TypeError("%s must be a csv file" % filename)
     return posts
+
+
+def parseCatrgories(filename):
+    """returns a list of tuples where each tuple stores the name and filename of the category"""
+    if type(filename) != str:
+        raise ValueError("Input must be a string")
+
+    categories = []
+
+    try:
+        with open(filename, mode='r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    print(f'Column names are {", ".join(row)}')
+                    line_count += 1
+                categories.append(tuple(row.values()))
+                line_count += 1
+            print(f' {line_count} lines.')
+    except:
+        raise TypeError("%s must be a csv file" % filename)
+    return categories

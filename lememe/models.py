@@ -13,9 +13,12 @@ def get_user_image_folder(instance, filename):
 
 
 def get_post_image_folder(instance, filename):
-    # name = instance.user.username
-    # filename = "%s_post_%s"%(name,filename[filename.find('.'):])
-    return "%s/post/%s"%(instance.user.username,filename)
+    return "%s/post/%s"%(instance.user.username,instance.client_id)
+
+def get_category_image_folder(instance, filename):
+    # the name of the file will be the category name with the format (ie. Funny.jpg)
+    filename = instance.name + filename[filename.rfind('.'):]
+    return "_category_pictures/%s"%filename
 
 
 class Category(models.Model):
@@ -23,6 +26,7 @@ class Category(models.Model):
     user = models.ForeignKey(User)
     name = models.CharField(max_length=max_length, unique=True)
     views = models.IntegerField(default=0)
+    picture = models.ImageField(storage=OverwriteStorage(),upload_to=get_category_image_folder, blank=True, verbose_name="Category Picture")
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
@@ -75,8 +79,15 @@ class Post(models.Model):
         return Preference.objects.filter(post=self).count()
 
     def get_rating(self):
-        likes = Preference.objects.filter(post=self, liked=True).count()
-        return likes / self.get_total_preferences()
+        total_ratings = self.get_total_preferences()
+        if total_ratings == 0:
+            return 0
+        else:
+            likes = Preference.objects.filter(post=self, liked=True).count()
+            return likes / total_ratings * 100
+
+    def get_num_of_comments(self):
+        return Comment.objects.filter(post=self).count()
 
 
 

@@ -17,30 +17,32 @@ def populate():
     # Superuser is used to create the initial categories
     superuser = create_superuser("god", "1111")
 
-    categories = {
-        "Funny": {"views": 128},
-        "Animals": {"views": 128},
-        "Legends": {"views": 128},
-        "Awesome": {"views": 128},
-        "Basketball": {"views": 128},
-        "Car": {"views": 128},
-        "Cosplay": {"views": 128},
-        "Art": {"views": 128},
-        "Football": {"views": 128},
-        "Gaming": {"views": 128},
-        "History": {"views": 128},
-        "Horror": {"views": 128},
-        "Family": {"views": 128},
-        "Movie": {"views": 128},
-        "Music": {"views": 128},
-        "Kids": {"views": 128},
-        "Tech": {"views": 128},
-        "Politics": {"views": 128},
-        "Relationship": {"views": 128},
-        "Roast": {"views": 128},
-        "Savage": {"views": 128},
-        "School": {"views": 128},
-        "Sport": {"views": 128},}
+    categories = parseCatrgories(os.path.join("population_files","categories.csv"))
+    # categories = [
+    #     "Funny",
+    #     "Animals",
+    #     "Legends",
+    #     "Awesome",
+    #     "Basketball",
+    #     "Car",
+    #     "Cosplay",
+    #     "Art",
+    #     "Football",
+    #     "Gaming",
+    #     "History",
+    #     "Horror",
+    #     "Family",
+    #     "Movie",
+    #     "Music",
+    #     "Kids",
+    #     "Tech",
+    #     "Politics",
+    #     "Relationship",
+    #     "Roast",
+    #     "Savage",
+    #     "School",
+    #     "Sport",
+    # ]
 
     posts = parsePosts(os.path.join("population_files","posts.csv"))
     # posts = {
@@ -111,10 +113,8 @@ def populate():
     # 5. Comments
     # ----------------------------------------------------
 
-
-    for cat in sorted(categories.keys()):
-        cat_data = categories.get(cat)
-        c = add_category(user=superuser, name=cat, views=cat_data["views"])
+    for cat in sorted(categories,key=lambda x: x[0]):  # sort the categories by name
+        c = add_category(user=superuser, name=cat[0], image_name=cat[1])
         # for p in cat_data["pages"]:
         #     add_page(c, p["title"], p["url"], p["views"])
 
@@ -194,9 +194,10 @@ def add_user(username, password, firstname, surname, bio, email, website):
     return user
 
 
-def add_category(user, name, views=0):
+def add_category(user, name, image_name, views=0):
     c = Category.objects.get_or_create(name=name, user=user)[0]
-    c.views = views
+    image_path = os.path.join(PROJECT_DIR, 'population_images', 'categories', image_name)
+    c.picture.save(image_name, File(open(image_path, 'rb')))
     c.save()
     return c
 
