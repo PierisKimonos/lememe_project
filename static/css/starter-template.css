@@ -59,6 +59,13 @@ body {
     border-right: 1px solid #4b4b4b;
 }
 
+.divider-horizontal {
+    height: 2px;
+    box-shadow: black;
+    background-color: #6c757d;
+    margin-bottom: 15px;
+}
+
 .svg_icon {
   display: inline-block;
   vertical-align: text-top;
@@ -83,4 +90,20 @@ body {
     display: inline;
     margin: 0 auto;
     width: 100%;
+}
+
+.post-title {
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+.post-label {
+    height: 40px;
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.post-label img {
+    width: 25px;
 }
