@@ -1,20 +1,24 @@
 {% extends 'lememe/base.html' %}
 {% load staticfiles %}
 
+
 {% block title_block %}
 Contact
 {% endblock%}
 
 {% block main_block %}
-<!-- col means column, md >=992px (Also use xs, sm and lg), and the 3 represents the size of the column
-3 * 4 = 12 (A 6 column layout would use 2 if they had equal size) -->
-<div class="row">
-    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        Contact page says
-    </div>
-    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
 
-    </div>
 
+<div class="jumbotron">
+  <h1 class="display-3">Contact Us</h1>
+  <p class="lead">We would love to hear from you!</p>
+  <hr>
+  <div class="containter">
+	<div class="row">
+		<div class="col">
+			Email: <strong>lememe_contact@hotmail.com</strong></div>
+		<div class="col">
+			Call us: <strong>0345 172 1337</strong></div>
 </div>
+
 {% endblock %}
