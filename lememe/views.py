@@ -211,6 +211,43 @@ def feeling_lucky(request):
     random_post = random.choice(Post.objects.all())
     return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.client_id]))
 
+
+def search(request):
+    context_dict = {}
+    if request.method == "GET":
+        keyword = request.GET.get("keyword",None)
+        if keyword:
+            context_dict["keyword"] = keyword
+
+        # Obtain results
+        results = Post.objects.filter(title__contains=keyword).order_by("-date")
+        # popular_page = request.GET.get('popular_page', 1)
+        #
+        # popular_paginator = Paginator(popular_posts, 2)
+        # try:
+        #     popular_posts = popular_paginator.page(popular_page)
+        # except PageNotAnInteger:
+        #     popular_posts = popular_paginator.page(1)
+        # except EmptyPage:
+        #     popular_posts = popular_paginator.page(popular_paginator.num_pages)
+        #
+        # context_dict["popular_posts"] = popular_posts
+
+
+        context_dict["results"] = results
+
+    # Call the helper function to handle the cookies
+    # visitor_cookie_handler(request)
+
+    # context_dict['visits'] = request.session.get('visits')
+
+    # Obtain the Response object early so we can add cookie information.
+    # this statement can also be before handling cookies in the case of client side cookies
+    response = render(request, 'lememe/search.html', context=context_dict)
+
+    # Return response back to user, updating any cookies that need changed.
+    return response
+
 @login_required
 def upload(request):
     # if this is a POST request we need to process the form data

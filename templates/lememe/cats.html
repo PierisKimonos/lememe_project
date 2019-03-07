@@ -13,7 +13,7 @@
                 <div class="col-3">
                     <div class="image-cropper ml-3">
                         <img class="category_pic"
-                            src="{{ MEDIA_URL }}{{ c.picture }}"
+                            src="{{ c.picture.url }}"
                             onerror="this.src='{% static 'images/lememe_icon.jpg' %}'">
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                 <div class="col-3">
                     <div class="image-cropper ml-3">
                         <img class="category_pic"
-                            src="{{ MEDIA_URL }}{{ MEDIA_URL }}{{ c.picture }}"
+                            src="{{ c.picture.url }}"
                             onerror="this.src='{% static 'images/lememe_icon.jpg' %}'">
                     </div>
                 </div>

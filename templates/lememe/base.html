@@ -97,7 +97,7 @@
             </li>
             {% endif %}
         </ul>
-        <form class="form-inline my-0 my-lg-0" action="{% url 'lememe:index' %}" method="GET">
+        <form class="form-inline my-0 my-lg-0" action="{% url 'lememe:search' %}" method="GET">
             <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}"
                    required="required"
                    placeholder="{% if keyword %}{{ keyword }}{% else %}Try searching something{% endif %}"
@@ -132,6 +132,11 @@
     </div>
     <br>
     {% endblock %}
+
+<div id="BacktoTop" class="bg-dark">
+    <h6>Back To </h6>
+    <h6 class="badge badge-primary d-block">Top!</h6>
+</div>
 
 </main><!-- /.container -->
 <script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
