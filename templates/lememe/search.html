@@ -1,0 +1,58 @@
+{% extends 'lememe/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Search
+{% endblock %}
+
+{% block rightbody_block %}
+    {% if results %}
+        <h5 class="welcome_text">Showing result for "{{ keyword }}" ({{ results.count }}).</h5>
+        <div class="divider-horizontal"></div>
+    {% else %}
+        <h5 class="welcome_text">No results found for "{{ keyword }}".</h5>
+    {% endif %}
+
+    <div class="container pl-md-5 pr-md-5 pr-sm-0 pl-sm-0">
+    {% if results %}
+        {% for post in results %}
+            <!-- View for one post -->
+            <div class="card border-0 shadow">
+                <div class="post-title card-header">{{ post.title }}</div>
+                <a href="{% url 'lememe:show_post' post.client_id %}">
+                    <img src="{{ MEDIA_URL }}{{ post.image }}" class="card-img-top" alt="Post's Image"></a>
+                <div class="card-footer text-center">
+                    <div class="row">
+
+                        <!-- Likes -->
+                        <div class="col-4">
+                            <div class="badge post-label border shadow-sm">
+                                <img src="{% static 'icons/star.svg' %}">
+                                <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:0 }}%</h5>
+                            </div>
+                        </div>
+
+                        <!-- Comments -->
+                        <div class="col-4">
+                            <div class="badge post-label border shadow-sm">
+                                <img src="{% static 'icons/comment.svg' %}">
+                                <h5 class="my-auto ml-2">{{ post.get_num_of_comments }}</h5>
+                            </div>
+                        </div>
+
+                        <!-- Views -->
+                        <div class="col-4">
+                            <div class="badge post-label border shadow-sm">
+                                <img src="{% static 'icons/eye.svg' %}">
+                                <h5 class="my-auto ml-2">{{ post.views }}</h5>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div><br>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+{% endblock %}

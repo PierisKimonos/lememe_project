@@ -16,6 +16,23 @@ setInterval(myFunction, 2000);
 // JQuery & AJAX Section
 $(document).ready(function () {
 
+    // Back to Top button
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 200) {
+            $('#BacktoTop').fadeIn();
+        } else {
+            $('#BacktoTop').fadeOut();
+        }
+    });
+
+    $("#BacktoTop").click(function () {
+        //1 second of animation time
+        //html works for FFX but not Chrome
+        //body works for Chrome but not FFX
+        //This strange selector seems to work universally
+        $("html, body").animate({scrollTop: 0}, 500,);
+    });
+
      $('[data-toggle="popover"]').popover(
      ).on('mouseenter', function () {
          var _this = this;

@@ -46,7 +46,7 @@
                                 <div class="col-4">
                                     <div class="badge post-label border shadow-sm">
                                         <img src="{% static 'icons/star.svg' %}">
-                                        <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:2 }}%</h5>
+                                        <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:0 }}%</h5>
                                     </div>
                                 </div>
 
@@ -112,7 +112,7 @@
                                 <div class="col-4">
                                     <div class="badge post-label border shadow-sm">
                                         <img src="{% static 'icons/star.svg' %}">
-                                        <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:2 }}%</h5>
+                                        <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:0 }}%</h5>
                                     </div>
                                 </div>
 
