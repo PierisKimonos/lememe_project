@@ -197,7 +197,7 @@ def show_profile(request, username):
         posts = None
         profile = None
 
-    context_dict['user'] = user
+    context_dict['display_user'] = user
     context_dict['profile'] = profile
     context_dict['posts'] = posts
     return render(request, 'lememe/profile.html', context_dict)

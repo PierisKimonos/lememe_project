@@ -56,44 +56,68 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mx-auto nav-fill">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'lememe:index' %}">Home <span class="sr-only">(current)</span></a>
+
+            {% url 'lememe:index' as url %}
+            <li class="nav-item{% if request.path == url %} active{% endif %}">
+                <a class="nav-link" href="{{ url }}">Home {% if request.path == url %}
+                    <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'lememe:feeling_lucky' %}">Feeling Lucky?</a>
+
+            {% url 'lememe:show_post' post_id=post.client_id  as url %}
+            <li class="nav-item{% if request.path == url %} active{% endif %}">
+                <a class="nav-link" href="{% url 'lememe:feeling_lucky' %}">Feeling Lucky? {% if request.path == url %}
+                    <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'lememe:contact' %}">Contact Us</a>
+
+            {% url 'lememe:contact' as url %}
+            <li class="nav-item{% if request.path == url %} active{% endif %}">
+                <a class="nav-link" href="{{ url }}">Contact Us {% if request.path == url %}
+                    <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'lememe:about' %}">About</a>
+
+            {% url 'lememe:about' as url %}
+            <li class="nav-item{% if request.path == url %} active{% endif %}">
+                <a class="nav-link" href="{{ url }}">About {% if request.path == url %}
+                    <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
+
             <li class="divider-vertical d-none d-md-block"></li>
             {% if user.is_authenticated %}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="dropdown01"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ user.username.capitalize }}
-                    <div class="photo" style="margin-left: 10px"><img
-                            src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"
-                            onerror="this.src='{% static 'images/placeholder_profile.png' %}'"></div>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="dropdown01">
-                    <a class="dropdown-item" href="{% url 'lememe:show_profile' user.username %}">Profile</a>
-                    <a class="dropdown-item" href="{% url 'lememe:upload' %}">Upload</a>
-                    <a class="dropdown-item" href="{% url 'lememe:show_settings' %}">Settings</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'lememe:logout' %}">Logout</a>
-                </div>
+                <li class="nav-item dropdown">
+                    {% url 'lememe:index' as index_url %}
+                    {% url 'lememe:show_profile' user.username as profile_url %}
+                    {% url 'lememe:upload' as upload %}
+                    {% url 'lememe:show_settings' as settings %}
+                    {% with profile_url|add:","|add:upload|add:","|add:settings as user_pages %}
+
+                    <a class="nav-link dropdown-toggle{% if request.path in user_pages and request.path != index_url %} active{% endif %}" href=""
+                       id="dropdown01"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% endwith %}
+                        {{ user.username.capitalize }}
+                        <div class="photo" style="margin-left: 10px"><img src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"
+                                onerror="this.src='{% static 'images/placeholder_profile.png' %}'"></div>
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="{% url 'lememe:show_profile' user.username %}">Profile</a>
+                        <a class="dropdown-item" href="{% url 'lememe:upload' %}">Upload</a>
+                        <a class="dropdown-item" href="{% url 'lememe:show_settings' %}">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'lememe:logout' %}">Logout</a>
+                    </div>
             </li>
             {% else %}
-            <li class="nav-item">
+                {% url 'lememe:login' as url %}
+            <li class="nav-item{% if request.path == url %} active{% endif %}">
 
-                <a class="nav-link" href="{% url 'lememe:login' %}"><img src="{% static 'icons/key.svg' %}"
+                <a class="nav-link" href="{{ url }}"><img src="{% static 'icons/key.svg' %}"
                                                                          style="fill: white"> Login</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'lememe:register' %}">Register</a>
+
+                {% url 'lememe:login' as url %}
+            <li class="nav-item{% if request.path == url %} active{% endif %}">
+                <a class="nav-link" href="{{ url }}">Register</a>
             </li>
             {% endif %}
         </ul>
