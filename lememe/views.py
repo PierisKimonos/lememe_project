@@ -132,17 +132,34 @@ def ajax_create_comment(request,post_id):
 
 def show_post(request, post_id):
     context_dict = {}
-    post = Post.objects.get(client_id=post_id)
 
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        comment(request, post)
+    try:
+        # Check if a post with the given client id exists
+        post = Post.objects.get(client_id=post_id)
 
-    comments = Comment.objects.filter(post=post).order_by('-date')
-    context_dict['post'] = post
-    context_dict['comments'] = comments
-    context_dict['comment_form'] = CommentForm()
-    return render(request, 'lememe/post.html', context_dict)
+        # increment the post's view count
+        # post.views += 1
+        # post.save()
+        post.increament_view_count()
+
+        # if this is a POST request we need to process the form data
+        if request.method == 'POST':
+            comment(request, post)
+
+        comments = Comment.objects.filter(post=post).order_by('-date')
+        context_dict['post'] = post
+        context_dict['comments'] = comments
+        context_dict['comment_form'] = CommentForm()
+
+        return render(request, 'lememe/post.html', context_dict)
+
+    except Post.DoesNotExist:
+        # If the requested post does not exist redirect to homepage
+        return HttpResponseRedirect(reverse('lememe:index'))
+
+
+
+
 
 
 def show_category(request, category_name_slug):
@@ -202,6 +219,7 @@ def show_category(request, category_name_slug):
 
 
 def about(request):
+
     return render(request, 'lememe/about.html', {})
 
 def contact(request):

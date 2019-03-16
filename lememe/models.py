@@ -89,6 +89,10 @@ class Post(models.Model):
     def get_num_of_comments(self):
         return Comment.objects.filter(post=self).count()
 
+    def increament_view_count(self):
+        self.views = self.views + 1
+        self.save()
+
 
 
 class Comment(models.Model):
