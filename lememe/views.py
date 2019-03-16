@@ -145,38 +145,61 @@ def show_post(request, post_id):
     return render(request, 'lememe/post.html', context_dict)
 
 
-
 def show_category(request, category_name_slug):
-    # create a context dictionary which we
-    # can pass to the template rendering engine
+
     context_dict = {}
 
-    try:
-        # Can we find a category name slug with the given name?
-        # If we can't, the .get() method raises a DoesNotExist exception.
-        # So the .get() method returns one model instance or raises an exception.
-        category = Category.objects.get(slug=category_name_slug)
+    if request.method == "GET":
 
-        # Retrieve all of the associated posts.
-        # Note that filter() will return a list of post objects or an empty list
-        posts = Post.objects.filter(category=category)
+        try:
+            # Can we find a category name slug with the given name?
+            # If we can't, the .get() method raises a DoesNotExist exception.
+            # So the .get() method returns one model instance or raises an exception.
+            category = Category.objects.get(slug=category_name_slug)
 
-        # Adds our results list to the template context under name pages.
-        context_dict["posts"] = posts
+            # Popular posts paging
+            # Filter by Category
+            popular_posts = Post.objects.filter(category=category).order_by("-views")
+            popular_page = request.GET.get('popular_page', 1)
 
-        # We also add the category object from
-        # the database to the context dictionary.
-        # We'll use this in the template to verify that the category exists.
-        context_dict["category"] = category
-    except Category.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything -
-        # the template will display the "no category" message for us.
-        context_dict["posts"] = None
-        context_dict["category"] = None
+            popular_paginator = Paginator(popular_posts, 2)
+            try:
+                popular_posts = popular_paginator.page(popular_page)
+            except PageNotAnInteger:
+                popular_posts = popular_paginator.page(1)
+            except EmptyPage:
+                popular_posts = popular_paginator.page(popular_paginator.num_pages)
+
+            context_dict["popular_posts"] = popular_posts
+
+            # New posts paging
+            # Filter by Category
+            new_posts = Post.objects.filter(category=category).order_by("-date")
+            new_page = request.GET.get('new_page', 1)
+
+            if request.GET.get('new_page') != None:
+                context_dict["activate_new_tab"] = True
+            else:
+                context_dict["activate_new_tab"] = False
+
+            new_paginator = Paginator(new_posts, 2)
+            try:
+                new_posts = new_paginator.page(new_page)
+            except PageNotAnInteger:
+                new_posts = new_paginator.page(1)
+            except EmptyPage:
+                new_posts = new_paginator.page(new_paginator.num_pages)
+
+            context_dict["new_posts"] = new_posts
+
+        except Category.DoesNotExist:
+            # if Category does not exist, return None in context dictionary
+            context_dict["popular_posts"] = None
+            context_dict["new_posts"] = None
 
     # Go render the response and return it to the client.
-    return render(request, 'lememe/category.html', context_dict)
+    return render(request, 'lememe/category.html', context=context_dict)
+
 
 def about(request):
     return render(request, 'lememe/about.html', {})
@@ -373,7 +396,7 @@ def user_login(request):
                     request.session.set_expiry(0)
 
                 login(request, user)
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('lememe:index'))
             else:
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your Lememe account is disabled.")
@@ -407,4 +430,4 @@ def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
     # Take the user back to the homepage.
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('lememe:index'))
