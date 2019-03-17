@@ -67,6 +67,66 @@ function readURL(input) {
 }
 
 
+// Submit like
+$('#option1').on('click', function (event) {
+    event.preventDefault();
+    console.log("Clicked Like")  // sanity check
+    add_preference(true);
+});
+
+// Submit dislike
+$('#option2').on('click', function (event) {
+    event.preventDefault();
+    console.log("Clicked Dislike")  // sanity check
+    add_preference(false);
+});
+
+// AJAX for liking a post
+function add_preference(preference_bool) {
+    console.log("adding preference " + preference_bool); // sanity check
+    var url = $("#option1").attr('data-action') + '/add_preference/';
+    console.log(url);
+    $.ajax({
+        url: url, // the endpoint
+        type: "POST", // http method
+        data: {preference: preference_bool}, // data sent with the post request
+
+        // handle a successful response
+        success: function (json) {
+
+            // When we get a successful responce
+            // we need to:
+            // update ratio bar
+            var like_ratio = json["like_ratio"];
+            document.getElementById("post_like_bar").style.width = like_ratio + "%";
+            if (!document.getElementById("post_like_bar_parent").className.includes("bg-danger")) {
+                document.getElementById("post_like_bar_parent").className += " bg-danger";
+            }
+
+            // post_like_bar.className += " bg-danger";
+
+            console.log("Preference response received")
+
+            // $('#comment-text').val(''); // remove the value from the input
+            //
+            // // obtain values from json object
+            // var user = json["user"];
+            // var date = json["created"];
+            // var user_pic_url = json["user_pic_url"];
+            // var text = json["text"];
+            // var comment_count = json["number_of_comments"];
+
+        },
+
+        // // handle a non-successful response
+        // error: function (xhr, errmsg, err) {
+        //     $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+        //         " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+        //     console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        // }
+    });
+}
+
 // AJAX for commenting
 function create_comment() {
     console.log("create comment is working!"); // sanity check
@@ -99,7 +159,7 @@ function create_comment() {
                 "\t\t\t\t\t\t\talt=\"Generic placeholder image\">\n" +
                 "\t\t\t\t\t</a>\n" +
                 "\t\t\t\t\t<div class=\"media-body\">\n" +
-                "\t\t\t\t\t\t<div class=\"mt-0 text-left\">\n" +
+                "\t\t\t\t\t\t<div class=\"mt-0 text-left\" style='text-transform: capitalize;'>\n" +
                 "\t\t\t\t\t\t\t<a href=\"/lememe/user/" + user + "\">" + user + "</a> -\n" +
                 "\n" +
                 "\t\t\t\t\t\t\t<span class=\"card-subtitle mb-2 text-muted\">" + date + "</span>\n" +
