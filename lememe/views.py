@@ -90,7 +90,7 @@ def comment(request,post):
 def ajax_create_comment(request,post_id):
     print("in ajax view")
     # try:
-    post = Post.objects.get(id=post_id)
+    post = Post.objects.get(client_id=post_id)
     # except Post.DoesNotExist:
     #     post = None
 
