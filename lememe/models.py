@@ -15,6 +15,7 @@ def get_user_image_folder(instance, filename):
 def get_post_image_folder(instance, filename):
     return "%s/post/%s"%(instance.user.username,instance.client_id)
 
+
 def get_category_image_folder(instance, filename):
     # the name of the file will be the category name with the format (ie. Funny.jpg)
     filename = instance.name + filename[filename.rfind('.'):]
