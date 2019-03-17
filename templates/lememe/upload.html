@@ -8,110 +8,6 @@ Upload
 
 
 {% block main_block %}
-
-<style>
-    /*Profile Pic Start*/
-    .picture-container {
-        position: relative;
-        cursor: pointer;
-        text-align: center;
-    }
-
-    .picture {
-        width: 100%;
-        height: 100%;
-        background-color: #999999;
-        border: 4px solid #CCCCCC;
-        color: #FFFFFF;
-        overflow: hidden;
-        transition: all 0.2s;
-        -webkit-transition: all 0.2s;
-    }
-
-    .picture:hover {
-        border-color: #2ca8ff;
-    }
-
-    .content.ct-wizard-green .picture:hover {
-        border-color: #05ae0e;
-    }
-
-    .content.ct-wizard-blue .picture:hover {
-        border-color: #3472f7;
-    }
-
-    .content.ct-wizard-orange .picture:hover {
-        border-color: #ff9500;
-    }
-
-    .content.ct-wizard-red .picture:hover {
-        border-color: #ff3b30;
-    }
-
-    .picture input[type="file"] {
-        cursor: pointer;
-        display: block;
-        height: 100%;
-        left: 0;
-        opacity: 0 !important;
-        position: absolute;
-        top: 0;
-        width: 100%;
-    }
-
-    .picture-src {
-        width: 100%;
-
-    }
-
-    .blue-border textarea {
-        border: 1px solid blue;
-    }
-
-    .blue-border .form-control:focus {
-        border: 1px solid blue;
-        box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, .25);
-    }
-
-    .green-border-focus .form-control:focus {
-        border: 1px solid #8bc34a;
-        box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, .25);
-    }
-
-    /*Profile Pic End*/
-</style>
-
-<!--<form method="post" novalidate>-->
-
-  <!--{% for field in form.visible_fields %}-->
-    <!--<div class="form-group">-->
-      <!--{{ field.label_tag }}-->
-
-      <!--{% if form.is_bound %}-->
-        <!--{% if field.errors %}-->
-          <!--{% render_field field class="form-control is-invalid" %}-->
-          <!--{% for error in field.errors %}-->
-            <!--<div class="invalid-feedback">-->
-              <!--{{ error }}-->
-            <!--</div>-->
-          <!--{% endfor %}-->
-        <!--{% else %}-->
-          <!--{% render_field field class="form-control is-valid" %}-->
-        <!--{% endif %}-->
-      <!--{% else %}-->
-        <!--{% render_field field class="form-control" %}-->
-      <!--{% endif %}-->
-
-      <!--{% if field.help_text %}-->
-        <!--<small class="form-text text-muted">{{ field.help_text }}</small>-->
-      <!--{% endif %}-->
-    <!--</div>-->
-  <!--{% endfor %}-->
-
-  <!--<button type="submit" class="btn btn-primary">Submit</button>-->
-<!--</form>-->
-
-
 <form method="post" novalidate action="{% url 'lememe:upload' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
@@ -185,13 +81,10 @@ Upload
             </div>
 
             <!--Right side-->
-            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 
                 <!--Image input-->
                 <div class="form-row">
-
-                    {{ form.image.label_tag }}
-
                     <div class="container">
                         <div class="picture-container">
                             <h6 class="">Choose Picture</h6>
