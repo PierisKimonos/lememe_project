@@ -88,6 +88,7 @@
             </div>
 			
             <div class="tab-pane fade{% if activate_new_tab == True %} show active{% endif %}" id="new" role="tabpanel" aria-labelledby="new_tab">
+				{% if liked_posts %}
                 {% for post in liked_posts %}
                     <!-- View for one post -->
                     <div class="card border-0 shadow">
@@ -125,4 +126,7 @@
                         </div>
                     </div><br>
                 {% endfor %}
+				{% else %}
+				<p>{{profile.user.username.capitalize}} hasn't liked any memes yet...</p>
+				{% endif %}
 {% endblock %}
