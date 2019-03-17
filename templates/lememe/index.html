@@ -81,16 +81,22 @@
                             <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                         {% endif %}
                         {% for i in popular_posts.paginator.page_range %}
-                            {% if popular_posts.number == i %}
-                                <li class="page-item active"><span class="page-link">{{ i }} <span
-                                        class="sr-only">(current)</span></span></li>
-                            {% else %}
-                                <li class="page-item"><a class="page-link" href="?popular_page={{ i }}">{{ i }}</a></li>
+                            {% if i <= popular_posts.number|add:3 and i >= popular_posts.number|add:-3 %}
+
+                                {% if popular_posts.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }} <span
+                                            class="sr-only">(current)</span></span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?popular_page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+
                             {% endif %}
                         {% endfor %}
                         {% if popular_posts.has_next %}
                             <li class="page-item"><a class="page-link"
-                                                     href="?popular_page={{ popular_posts.next_page_number }}">&raquo;</a></li>
+                                                     href="?popular_page={{ popular_posts.next_page_number }}">&raquo;</a>
+                            </li>
                         {% else %}
                             <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
                         {% endif %}
@@ -148,11 +154,14 @@
                             <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                         {% endif %}
                         {% for i in new_posts.paginator.page_range %}
-                            {% if new_posts.number == i %}
-                                <li class="page-item active"><span class="page-link">{{ i }} <span
-                                        class="sr-only">(current)</span></span></li>
-                            {% else %}
-                                <li class="page-item"><a class="page-link" href="?new_page={{ i }}">{{ i }}</a></li>
+                            {% if i <= new_posts.number|add:3 and i >= new_posts.number|add:-3 %}
+                                {% if new_posts.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }} <span
+                                            class="sr-only">(current)</span></span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?new_page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+
                             {% endif %}
                         {% endfor %}
                         {% if new_posts.has_next %}
