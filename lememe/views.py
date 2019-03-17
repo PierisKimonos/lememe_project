@@ -215,14 +215,17 @@ def show_profile(request, username):
         user = User.objects.get(username=username)
         profile = UserProfile.objects.get(user=user)
         posts = Post.objects.filter(user=user)
+        liked_posts = Preference.objects.filter(user=user)        
     except:
         user = None
         posts = None
         profile = None
+        liked_posts = None
 
     context_dict['user'] = user
     context_dict['profile'] = profile
     context_dict['posts'] = posts
+    context_dict['liked_posts'] = liked_posts
     return render(request, 'lememe/profile.html', context_dict)
 
 def show_settings(request):
