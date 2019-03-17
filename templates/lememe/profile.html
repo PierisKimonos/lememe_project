@@ -5,16 +5,15 @@
 {% block rightbody_block %}
 
 <div class="container">
-    <div class="card border-5 shadow">		
-		<div class= "card-body">
+
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-md-12 col-lg-6">
 					<img style="width:400px;height:300px;"  src="{{ MEDIA_URL }}{{profile.picture}}" class="rounded-circle img-thumbnail shadow" >
 					<div><br>
 					</div>
 					<p class="font-italic">"{{profile.bio}}"</p>
 				</div>
-				<div class="col-sm-6"> 
+				<div class="col-sm-12 col-lg-6 mx-0">
 
 						<ul class="list-group list-group-flush text-left">
 							<li class="list-group-item">Name: {{profile.user.username.capitalize}}</li>
@@ -24,9 +23,9 @@
 								<li class="list-group-item">Meme count: {{posts|length}}</li>
 						</ul>				
 				</div>	
-			</div>					
-		</div>		
-    </div><br>
+			</div>
+    </div>
+<br>
 	
 	
 	
