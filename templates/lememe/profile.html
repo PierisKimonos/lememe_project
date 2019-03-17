@@ -17,7 +17,7 @@
 				<div class="col-sm-6"> 
 
 						<ul class="list-group list-group-flush text-left">
-							<li class="list-group-item">Name: {{profile.user}}</li>
+							<li class="list-group-item">Name: {{profile.user.username.capitalize}}</li>
 								<li class="list-group-item">Email: {{display_user.email}}</li>
 								<li class="list-group-item">Website: {{profile.website}}</li>
 								<li class="list-group-item">Joined: {{display_user.date_joined}}</li>
@@ -37,11 +37,11 @@
             <li class="nav-item w-50 text-center bg-secondary rounded-top">
                 <a class="nav-link text-white{% if activate_new_tab != True %} active{% endif %}" id="popular-tab" data-toggle="tab" href="#popular" role="tab"
                    aria-controls="popular"
-                   aria-selected="true">{{profile.user}}'s memes</a>
+                   aria-selected="true">{{profile.user.username.capitalize}}'s memes</a>
             </li>
             <li class="nav-item w-50 text-center bg-secondary rounded-top">
                 <a class="nav-link text-white{% if activate_new_tab == True %} active{% endif %}" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new"
-                   aria-selected="false">{{profile.user}}'s liked memes</a>
+                   aria-selected="false">{{profile.user.username.capitalize}}'s liked memes</a>
             </li>
         </ul>
         <div class="divider-horizontal"></div>

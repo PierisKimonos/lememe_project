@@ -13,7 +13,20 @@
             <div class="card-body container">
                 <div class="row">
                     <div class="col-sm-3">
-                        <p class="text-left"><a href="{% url 'lememe:index' %}">{{ post.user }}</a>
+                        <div class="media">
+                            <a href="{% url 'lememe:show_profile' post.user.username %}">
+                                <img class="d-flex mr-3 image-cropper" style="width:80px;height:80px;margin-left:25px"
+                                     src="{{ MEDIA_URL }}{{ post.user }}/{{ post.user }}_profile_pic.jpg"
+                                     onerror="this.src='{% static 'images/placeholder_profile.png' %}'"
+                                     alt="Generic placeholder image">
+                            </a>
+
+                        </div>
+						<div class="media-body">
+                                <div class="mt-0">
+                                    <a href="{% url 'lememe:show_profile' post.user.username %}">{{ post.user.username.capitalize }}</a>
+                                </div>
+                            </div>
                     </div>
                     <div class="col-sm-5 ">
                         {{ post.date }}
@@ -26,10 +39,16 @@
                         <br>
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-secondary active">
-                                <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Upvote
+                                <input type="radio" name="options" id="option1" autocomplete="off" checked="">
+								    <div class="badge post-label">
+                                        <img src="{% static 'icons/thumbsup.svg' %}">
+                                    </div>
                             </label>
                             <label class="btn btn-secondary">
-                                <input type="radio" name="options" id="option2" autocomplete="off"> Downvote
+                                <input type="radio" name="options" id="option2" autocomplete="off">
+									<div class="badge post-label">
+                                        <img src="{% static 'icons/thumbsup.svg' %}">
+                                    </div>
                             </label>
                         </div>
                     </div>
@@ -90,7 +109,7 @@
                             </a>
                             <div class="media-body">
                                 <div class="mt-0 text-left">
-                                    <a href="{% url 'lememe:show_profile' comment.user.username %}">{{ comment.user }}</a> -
+                                    <a href="{% url 'lememe:show_profile' comment.user.username %}">{{ comment.user.username.capitalize }}</a> -
 
                                     <span class="card-subtitle mb-2 text-muted">{{ comment.date|date:'M. d, Y, f A' }}</span>
                                 </div>
