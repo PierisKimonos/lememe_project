@@ -288,7 +288,7 @@ def show_profile(request, username):
         # If the user profile does not exist, redirect to homepage
         return HttpResponseRedirect(reverse('lememe:index'))
 
-    context_dict['user'] = user
+    context_dict['display_user'] = user
     context_dict['profile'] = profile
     context_dict['posts'] = posts
     context_dict['liked_posts'] = liked_posts
