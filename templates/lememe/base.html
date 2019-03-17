@@ -115,7 +115,7 @@
                                                                          style="fill: white"> Login</a>
             </li>
 
-                {% url 'lememe:login' as url %}
+                {% url 'lememe:register' as url %}
             <li class="nav-item{% if request.path == url %} active{% endif %}">
                 <a class="nav-link" href="{{ url }}">Register</a>
             </li>
