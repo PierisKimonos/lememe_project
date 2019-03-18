@@ -14,7 +14,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 # Import the forms
-from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm
+from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm, UpdateUserSettingsForm, UpdateUserProfileSettingsForm
 
 def index(request):
     context_dict = {}
@@ -90,7 +90,7 @@ def comment(request,post):
 def ajax_create_comment(request,post_id):
     print("in ajax view")
     # try:
-    post = Post.objects.get(id=post_id)
+    post = Post.objects.get(client_id=post_id)
     # except Post.DoesNotExist:
     #     post = None
 
@@ -130,19 +130,86 @@ def ajax_create_comment(request,post_id):
         )
 
 
+@csrf_exempt
+def ajax_add_preference(request,post_id):
+
+    try:
+        post = Post.objects.get(client_id=post_id)
+    except Post.DoesNotExist:
+        return None
+
+    if request.method == 'POST' and post is not None:
+        preference = request.POST.get('preference')
+        print(preference)
+
+        if preference == "true":
+            preference = True
+        else:
+            preference = False
+
+        response_data = {}
+
+        # Check if a preference already exists in the database
+        try:
+            old_preference = Preference.objects.get(user=request.user, post=post)
+        except Preference.DoesNotExist:
+            old_preference = None
+
+        # If the user post preference exists, update the liked attribute
+        if old_preference:
+            old_preference.liked = preference
+            old_preference.save()
+        else:
+            # If it does not exist, create it
+            new_preference = Preference.objects.create(user=request.user, post=post, liked=preference)
+            new_preference.save()
+
+        # Likes Ratio
+        response_data['like_ratio'] = post.get_rating()
+        # What user's preference is
+        response_data['preference'] = preference
+
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
+
+
 def show_post(request, post_id):
     context_dict = {}
-    post = Post.objects.get(client_id=post_id)
 
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        comment(request, post)
+    try:
+        # Check if a post with the given client id exists
+        post = Post.objects.get(client_id=post_id)
 
-    comments = Comment.objects.filter(post=post).order_by('-date')
-    context_dict['post'] = post
-    context_dict['comments'] = comments
-    context_dict['comment_form'] = CommentForm()
-    return render(request, 'lememe/post.html', context_dict)
+        # increment the post's view count
+        # post.views += 1
+        # post.save()
+        post.increament_view_count()
+
+        # if this is a POST request we need to process the form data
+        if request.method == 'POST':
+            comment(request, post)
+
+        comments = Comment.objects.filter(post=post).order_by('-date')
+        context_dict['post'] = post
+        context_dict['comments'] = comments
+        context_dict['comment_form'] = CommentForm()
+
+        return render(request, 'lememe/post.html', context_dict)
+
+    except Post.DoesNotExist:
+        # If the requested post does not exist redirect to homepage
+        return HttpResponseRedirect(reverse('lememe:index'))
+
+
+
+
 
 
 def show_category(request, category_name_slug):
@@ -202,6 +269,7 @@ def show_category(request, category_name_slug):
 
 
 def about(request):
+
     return render(request, 'lememe/about.html', {})
 
 def contact(request):
@@ -215,21 +283,42 @@ def show_profile(request, username):
         user = User.objects.get(username=username)
         profile = UserProfile.objects.get(user=user)
         posts = Post.objects.filter(user=user)
-        liked_posts = Preference.objects.filter(user=user)        
-    except:
-        user = None
-        posts = None
-        profile = None
-        liked_posts = None
+        liked_posts = Preference.objects.filter(user=user)
+    except (User.DoesNotExist, UserProfile.DoesNotExist):
+        # If the user profile does not exist, redirect to homepage
+        return HttpResponseRedirect(reverse('lememe:index'))
 
-    context_dict['user'] = user
+    context_dict['display_user'] = user
     context_dict['profile'] = profile
     context_dict['posts'] = posts
     context_dict['liked_posts'] = liked_posts
     return render(request, 'lememe/profile.html', context_dict)
 
 def show_settings(request):
-    return render(request, 'lememe/settings.html', {})
+    profile = UserProfile.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        user_form = UpdateUserSettingsForm(request.POST, instance=request.user)
+        profile_form = UpdateUserProfileSettingsForm(request.POST, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile = profile_form.save(commit=False)
+
+            # We also need to store the uploaded profile picture
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+
+            profile.save()
+
+            return HttpResponseRedirect(reverse('lememe:show_profile',args=[request.user.username]))
+
+    else:
+        user_form = UpdateUserSettingsForm(instance=request.user)
+        profile_form = UpdateUserProfileSettingsForm(instance=profile)
+
+    context_dict = {'user_form':user_form,'profile_form': profile_form}
+    return render(request, 'lememe/settings.html', context_dict)
 
 def feeling_lucky(request):
 
@@ -368,6 +457,7 @@ def register(request):
 
 
 def user_login(request):
+    context_dict = {}
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
         # Gather the username and password provided by the user.
@@ -383,7 +473,6 @@ def user_login(request):
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
-        context_dict = {}
 
         # If we have a User object, the details are correct.
         # If None (Python's way of representing the absence of a value), no user
@@ -412,18 +501,13 @@ def user_login(request):
             else:
                 context_dict['login_error'] = "The combination does not match"
 
-            return render(request, 'lememe/login.html', context_dict)
+    # The boolean register_form is used for the template to know which tab
+    # to have activated on the login page. Login or Register?
+    context_dict['register_form'] = False
+    context_dict['user_form'] = UserForm()
+    context_dict['profile_form'] = UserProfileForm()
 
-    # The request is not a HTTP POST, so display the login form.
-    # This scenario would most likely be a HTTP GET.
-    else:
-        # No context variables to pass to the template system, hence the
-        # blank dictionary object...
-        return render(request, 'lememe/login.html',
-                      {'register_form': False,
-                       'user_form': UserForm(),
-                       'profile_form': UserProfileForm(),}
-                      )
+    return render(request, 'lememe/login.html',context_dict)
 
 
 # Use the login_required() decorator to ensure only those logged in can

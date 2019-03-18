@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^register/$', views.register, name='register'),
     url(r'^login/$', views.user_login, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^post/(?P<post_id>[\w]+)/add_preference/$', views.ajax_add_preference, name='add_preference'),
     url(r'^post/(?P<post_id>[\w]+)/add_comment/$', views.ajax_create_comment, name='add_comment'),
     url(r'^post/(?P<post_id>[\w]+)$', views.show_post, name='show_post'),
     url(r'^user/settings/$', views.show_settings, name='show_settings'),
