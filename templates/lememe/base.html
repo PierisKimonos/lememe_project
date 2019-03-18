@@ -95,7 +95,7 @@
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% endwith %}
                         {{ user.username.capitalize }}
-                        <div class="photo" style="margin-left: 10px"><img src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"
+                        <div class="photo" style="margin-left: 10px"><img src="{{ MEDIA_URL }}{{ user.user_profile.picture }}"
                                 onerror="this.src='{% static 'images/placeholder_profile.png' %}'"></div>
                     </a>
 
