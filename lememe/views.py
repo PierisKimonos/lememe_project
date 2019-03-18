@@ -457,6 +457,7 @@ def register(request):
 
 
 def user_login(request):
+    context_dict = {}
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
         # Gather the username and password provided by the user.
@@ -472,7 +473,6 @@ def user_login(request):
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
-        context_dict = {}
 
         # If we have a User object, the details are correct.
         # If None (Python's way of representing the absence of a value), no user
@@ -503,11 +503,11 @@ def user_login(request):
 
     # The boolean register_form is used for the template to know which tab
     # to have activated on the login page. Login or Register?
-    return render(request, 'lememe/login.html',
-                  {'register_form': False,
-                   'user_form': UserForm(),
-                   'profile_form': UserProfileForm(),}
-                  )
+    context_dict['register_form'] = False
+    context_dict['user_form'] = UserForm()
+    context_dict['profile_form'] = UserProfileForm()
+
+    return render(request, 'lememe/login.html',context_dict)
 
 
 # Use the login_required() decorator to ensure only those logged in can
