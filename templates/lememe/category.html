@@ -1,10 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'lememe/base.html' %}
+{% load staticfiles %}
 
-</body>
-</html>
+{% block title_block %}
+    Category
+{% endblock %}
+
+
+{% block rightbody_block %}
+    <div class="container pl-md-5 pr-md-5 pr-sm-0 pl-sm-0">
+        <ul class="nav nav-pills justify-content-end" id="myTab" role="tablist">
+            <li class="nav-item w-50 text-center bg-secondary rounded-top">
+                <a class="nav-link text-white{% if activate_new_tab != True %} active{% endif %}" id="popular-tab" data-toggle="tab" href="#popular" role="tab"
+                   aria-controls="popular"
+                   aria-selected="true">Popular</a>
+            </li>
+            <li class="nav-item w-50 text-center bg-secondary rounded-top">
+                <a class="nav-link text-white{% if activate_new_tab == True %} active{% endif %}" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new"
+                   aria-selected="false">New</a>
+            </li>
+        </ul>
+        <div class="divider-horizontal"></div>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade{% if activate_new_tab != True %} show active{% endif %}" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+           
+                {% for post in popular_posts %}
+                    <!-- View for one post -->
+                    <div class="card border-0 shadow">
+                        <div class="post-title card-header">{{ post.title }}</div>
+                        <a href="{% url 'lememe:show_post' post.client_id %}">
+                            <img src="{{ MEDIA_URL }}{{ post.image }}" class="card-img-top" alt="Post's Image"></a>
+                        <div class="card-footer text-center">
+                            <div class="row">
+
+                                <!-- Likes -->
+                                <div class="col-4">
+                                    <div class="badge post-label border shadow-sm">
+                                        <img src="{% static 'icons/star.svg' %}">
+                                        <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:0 }}%</h5>
+                                    </div>
+                                </div>
+
+                                <!-- Comments -->
+                                <div class="col-4">
+                                    <div class="badge post-label border shadow-sm">
+                                        <img src="{% static 'icons/comment.svg' %}">
+                                        <h5 class="my-auto ml-2">{{ post.get_num_of_comments }}</h5>
+                                    </div>
+                                </div>
+
+                                <!-- Views -->
+                                <div class="col-4">
+                                    <div class="badge post-label border shadow-sm">
+                                        <img src="{% static 'icons/eye.svg' %}">
+                                        <h5 class="my-auto ml-2">{{ post.views }}</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div><br>
+                {% endfor %}
+
+                {% if popular_posts.has_other_pages %}
+                    <ul class="pagination justify-content-center pt-4">
+                        {% if popular_posts.has_previous %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?popular_page={{ popular_posts.previous_page_number }}">&laquo;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        {% endif %}
+                        {% for i in popular_posts.paginator.page_range %}
+                            {% if popular_posts.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }} <span
+                                        class="sr-only">(current)</span></span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?popular_page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if popular_posts.has_next %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?popular_page={{ popular_posts.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="tab-pane fade{% if activate_new_tab == True %} show active{% endif %}" id="new" role="tabpanel" aria-labelledby="new_tab">
+
+                {% for post in new_posts %}
+                    <!-- View for one post -->
+                    <div class="card border-0 shadow">
+                        <div class="post-title card-header">{{ post.title }}</div>
+                        <a href="{% url 'lememe:show_post' post.client_id %}">
+                            <img src="{{ MEDIA_URL }}{{ post.image }}" class="card-img-top" alt="Post's Image"></a>
+                        <div class="card-footer text-center">
+                            <div class="row">
+
+                                <!-- Likes -->
+                                <div class="col-4">
+                                    <div class="badge post-label border shadow-sm">
+                                        <img src="{% static 'icons/star.svg' %}">
+                                        <h5 class="my-auto ml-2">{{ post.get_rating|floatformat:0 }}%</h5>
+                                    </div>
+                                </div>
+
+                                <!-- Comments -->
+                                <div class="col-4">
+                                    <div class="badge post-label border shadow-sm">
+                                        <img src="{% static 'icons/comment.svg' %}">
+                                        <h5 class="my-auto ml-2">{{ post.get_num_of_comments }}</h5>
+                                    </div>
+                                </div>
+
+                                <!-- Views -->
+                                <div class="col-4">
+                                    <div class="badge post-label border shadow-sm">
+                                        <img src="{% static 'icons/eye.svg' %}">
+                                        <h5 class="my-auto ml-2">{{ post.views }}</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div><br>
+                {% endfor %}
+                <div class="container m-5 bg-warning"></div>
+
+                {% if new_posts.has_other_pages %}
+                    <ul class="pagination justify-content-center pt-4">
+                        {% if new_posts.has_previous %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?new_page={{ new_posts.previous_page_number }}">&laquo;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        {% endif %}
+                        {% for i in new_posts.paginator.page_range %}
+                            {% if new_posts.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }} <span
+                                        class="sr-only">(current)</span></span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?new_page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if new_posts.has_next %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?new_page={{ new_posts.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

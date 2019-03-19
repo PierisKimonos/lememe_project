@@ -13,25 +13,43 @@
             <div class="card-body container">
                 <div class="row">
                     <div class="col-sm-3">
-                        <p class="text-left"><a href="{% url 'lememe:index' %}">{{ post.user }}</a>
+                        <div class="media">
+                            <a href="{% url 'lememe:show_profile' post.user.username %}">
+                                <img class="d-flex mr-3 image-cropper" style="width:80px;height:80px;margin-left:25px"
+                                     src="{{ MEDIA_URL }}{{ post.user }}/{{ post.user }}_profile_pic.jpg"
+                                     onerror="this.src='{% static 'images/placeholder_profile.png' %}'"
+                                     alt="Generic placeholder image">
+                            </a>
+
+                        </div>
+						<div class="media-body">
+                                <div class="mt-0">
+                                    <a href="{% url 'lememe:show_profile' post.user.username %}">{{ post.user.username.capitalize }}</a>
+                                </div>
+                            </div>
                     </div>
                     <div class="col-sm-5 ">
                         {{ post.date }}
                     </div>
                     <div class="col-sm-4">
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="41"
+                        <div id="post_like_bar_parent" class="progress{% if post.get_total_preferences != 0 %} bg-danger{% endif %}">
+                            <div id="post_like_bar" class="progress-bar bg-success" role="progressbar" style="width: {{ post.get_rating }}%" aria-valuenow="41"
                                  aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <br>
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-secondary active">
-                                <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Upvote
-                            </label>
-                            <label class="btn btn-secondary">
-                                <input type="radio" name="options" id="option2" autocomplete="off"> Downvote
-                            </label>
+                        <div class="row mt-2 pl-3 pr-3 btn-group-sm" role="group">
+                            <button id="option1" type="submit" class="btn btn-labeled btn-success col"
+                                    data-action="{% url 'lememe:show_post' post_id=post.client_id %}">
+                                <div class="badge post-label">
+                                    <img src="{% static 'icons/thumbsup.svg' %}">
+                                </div>
+                            </button>
+                            <button id="option2" type="submit" class="btn btn-labeled btn-danger col">
+                                <div class="badge post-label">
+                                    <img src="{% static 'icons/thumbsdown.svg' %}">
+                                </div>
+                            </button>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -41,7 +59,7 @@
         <h4 class="text-left">Comments (<span id="number_of_comments">{{ comments|length }}</span>)</h4>
         {% if user.is_authenticated %}
             {% if comment_form %}
-                <form id="comment_form" class="container" action="{% url 'lememe:show_post' post_id=post.pk %}"
+                <form id="comment_form" action="{% url 'lememe:show_post' post_id=post.client_id %}"
                       method="post">
 
                     {% csrf_token %}
@@ -90,7 +108,7 @@
                             </a>
                             <div class="media-body">
                                 <div class="mt-0 text-left">
-                                    <a href="{% url 'lememe:show_profile' comment.user.username %}">{{ comment.user }}</a> -
+                                    <a href="{% url 'lememe:show_profile' comment.user.username %}">{{ comment.user.username.capitalize }}</a> -
 
                                     <span class="card-subtitle mb-2 text-muted">{{ comment.date|date:'M. d, Y, f A' }}</span>
                                 </div>

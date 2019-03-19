@@ -1,84 +1,390 @@
 {% extends 'lememe/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block title_block %}
-Settings
-{% endblock%}
+    Settings
+{% endblock %}
 
 {% block rightbody_block %}
 
+    {#    <form action="{% url 'lememe:show_settings' %}" method="post" enctype="multipart/form-data" novalidate>#}
+    {#        {% csrf_token %}#}
+    {##}
+    {#        {% if user_form %}#}
+    {##}
+    {#            {% for field in user_form %}#}
+    {##}
+    {#                <p>{{ field.label }}: {{ field }}</p>#}
+    {#            {% endfor %}#}
+    {##}
+    {#        {% endif %}#}
+    {##}
+    {##}
+    {#        {% if profile_form %}#}
+    {##}
+    {#            {% for field in profile_form %}#}
+    {#                <p>{{ field.label }}: {{ field }}</p>#}
+    {#            {% endfor %}#}
+    {##}
+    {#        {% endif %}#}
+    {##}
+    {#        <input type="submit" name="Submit" title="Submit">#}
+    {##}
+    {#    </form>#}
 
-<div class="container mt-5">
-    <h2>User's settings</h2>
-    <div class="row">
-        <div class="col-lg-4 pb-5">
-            <!-- Account Sidebar-->
-            <div class="author-card pb-3">
-                <div class="author-card-cover" style="background-image: url(https://demo.createx.studio/createx-html/img/widgets/author/cover.jpg);"><a class="btn btn-style-1 btn-white btn-sm" href="#" data-toggle="tooltip" title="" ></a></div>
-                <div class="author-card-profile">
-                    <div class="author-card-avatar"><img src="http://bootdey.com/img/Content/avatar/avatar1.png" class="img-thumbnail"alt="Daniel Adams">
+    <form action="{% url 'lememe:show_settings' %}" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if user_form and profile_form %}
+
+            {# HIDDEN FIELDS #}
+            {% for hidden_field in user_form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+
+            {% for hidden_field in profile_form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+
+            {# SHOW FORM ERRORS #}
+            {% if user_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in user_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if profile_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in profile_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# DISPLAY FORMS #}
+            <div class="container">
+                <h2>User's settings</h2>
+                <div class="row">
+                    <div class="col-lg-4 pb-5">
+                        <!--Profile Picture input-->
+                        <div class="form-row">
+                            <div class="container">
+                                <div class="picture-container">
+                                    <div class="picture">
+                                        <img src=""
+                                             class="picture-src" id="ImagePreview" title="">
+                                        {% if profile_form.is_bound %}
+                                            {% if profile_form.picture.errors %}
+                                                {% render_field profile_form.picture class="form-control is-invalid" %}
+                                                {% for error in profile_form.picture.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ error }}
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                {% render_field profile_form.picture class="form-control is-valid" %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% render_field profile_form.picture class="form-control" %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if profile_form.picture.help_text %}
+                                <small class="form-text text-muted">{{ profile_form.picture.help_text }}</small>
+                            {% endif %}
+                        </div>
+
+
+                        <div class="author-card-details">
+                            <h5 class="author-card-name text-lg">{{ user.username }}</h5><span
+                                class="author-card-position">Joined {{ user.date_joined|date:'d M. Y' }}</span>
+                        </div>
+
                     </div>
-                    <div class="author-card-details">
-                        <h5 class="author-card-name text-lg">Daniel Adams</h5><span class="author-card-position">Joined February 06, 2017</span>
+                    <!-- Profile Settings-->
+
+
+                    <!--Title input-->
+                    <div class="form-row">
+                        {{ form.title.label_tag }}
+
+                        {% if form.is_bound %}
+                            {% if form.title.errors %}
+                                {% render_field form.title class="form-control is-invalid" %}
+                                {% for error in form.title.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field form.title class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field form.title class="form-control" %}
+                        {% endif %}
+
+                        {% if form.title.help_text %}
+                            <small class="form-text text-muted">{{ form.title.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-8 pb-5">
+                        <div class="row">
+                            <!-- First Name Input -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ user_form.first_name.label_tag }}</label>
+
+                                    {% if user_form.is_bound %}
+                                        {% if user_form.first_name.errors %}
+                                            {% render_field user_form.first_name class="form-control is-invalid" value=user_form.first_name.value %}
+                                            {% for error in user_form.first_name.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field user_form.first_name class="form-control is-valid" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field user_form.first_name class="form-control" %}
+                                    {% endif %}
+
+                                    {% if user_form.first_name.help_text %}
+                                        <small class="form-text text-muted">{{ user_form.first_name.help_text }}</small>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <!-- Last Name Input -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ user_form.last_name.label_tag }}</label>
+
+                                    {% if user_form.is_bound %}
+                                        {% if user_form.last_name.errors %}
+                                            {% render_field user_form.last_name class="form-control is-invalid" value=user_form.last_name.value %}
+                                            {% for error in user_form.last_name.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field user_form.last_name class="form-control is-valid" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field user_form.last_name class="form-control" %}
+                                    {% endif %}
+
+                                    {% if user_form.last_name.help_text %}
+                                        <small class="form-text text-muted">{{ user_form.last_name.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Email Input -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ user_form.email.label_tag }}</label>
+
+                                    {% if user_form.is_bound %}
+                                        {% if user_form.email.errors %}
+                                            {% render_field user_form.email class="form-control is-invalid" value=user_form.email.value %}
+                                            {% for error in user_form.email.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field user_form.email class="form-control is-valid" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field user_form.email class="form-control" %}
+                                    {% endif %}
+
+                                    {% if user_form.email.help_text %}
+                                        <small class="form-text text-muted">{{ user_form.email.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- Website Input -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ profile_form.website.label_tag }}</label>
+
+                                    {% if profile_form.is_bound %}
+                                        {% if profile_form.website.errors %}
+                                            {% render_field profile_form.website class="form-control is-invalid" value=profile_form.website.value %}
+                                            {% for error in profile_form.website.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field profile_form.website class="form-control is-valid" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field profile_form.website class="form-control" %}
+                                    {% endif %}
+
+                                    {% if profile_form.website.help_text %}
+                                        <small class="form-text text-muted">{{ profile_form.website.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ profile_form.bio.label_tag }}</label>
+
+                                    {% if profile_form.is_bound %}
+                                        {% if profile_form.bio.errors %}
+                                            {% render_field profile_form.bio class="form-control is-invalid" value=profile_form.bio.value %}
+                                            {% for error in profile_form.bio.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field profile_form.bio class="form-control is-valid" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field profile_form.bio class="form-control" %}
+                                    {% endif %}
+
+                                    {% if profile_form.bio.help_text %}
+                                        <small class="form-text text-muted">{{ profile_form.bio.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        <div class="col-12 d-inline">
+                            <!-- SETTINGS FORM SUBMIT BUTTON -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                <button class="btn btn-style-1 btn-primary" type="submit" name="settings_form" data-toast=""
+                                        data-toast-position="topRight" data-toast-type="success"
+                                        data-toast-icon="fe-icon-check-circle" data-toast-title="Success!"
+                                        data-toast-message="Your profile updated successfuly.">Update Profile
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        {% endif %}
+    </form>
+    <hr class="mt-2 mb-3">
+    {% if change_password_form %}
+        <form action="{% url 'lememe:show_settings' %}" method="post" novalidate>
+            {% csrf_token %}
 
-        </div>
-        <!-- Profile Settings-->
-        <div class="col-lg-8 pb-5">
-            <form class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="account-fn">First Name</label>
-                        <input class="form-control" type="text" id="account-fn" value="Daniel" required="">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="account-ln">Last Name</label>
-                        <input class="form-control" type="text" id="account-ln" value="Adams" required="">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="account-email">E-mail Address</label>
-                        <input class="form-control" type="email" id="account-email" value="daniel.adams@example.com" required="">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Website</label>
-                        <input class="form-control" type="text" id="website" value="www.abc.com" required="">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="account-pass">New Password</label>
-                        <input class="form-control" type="password" id="account-pass">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="account-confirm-pass">Confirm Password</label>
-                        <input class="form-control" type="password" id="account-confirm-pass">
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group">
-                        <label>Bio</label>
-                        <textarea class="form-control" type="text" id="Bio" rows="4"></textarea>
-                    </div>
+            {# HIDDEN FIELDS #}
+            {% for hidden_field in change_password_form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
 
+            {# SHOW FORM ERRORS #}
+            {% if change_password_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in change_password_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
                 </div>
-                <div class="col-12">
-                    <hr class="mt-2 mb-3">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                        <button class="btn btn-style-1 btn-primary" type="button" data-toast="" data-toast-position="topRight" data-toast-type="success" data-toast-icon="fe-icon-check-circle" data-toast-title="Success!" data-toast-message="Your profile updated successfuly.">Update Profile</button>
+            {% endif %}
+
+            {% if change_password_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in change_password_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+
+
+            <div class="row">
+                <div class="col-6 mx-auto">
+                    <div class="form-group">
+                        <label>{{ change_password_form.old_password.label_tag }}</label>
+
+                        {% if change_password_form.is_bound %}
+                            {% if change_password_form.old_password.errors %}
+                                {% render_field change_password_form.old_password class="form-control is-invalid" value=change_password_form.old_password.value %}
+                                {% for error in change_password_form.old_password.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field change_password_form.old_password class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field change_password_form.old_password class="form-control" %}
+                        {% endif %}
+
+                        {% if change_password_form.old_password.help_text %}
+                            <small class="form-text text-muted">{{ change_password_form.old_password.help_text }}</small>
+                        {% endif %}
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
+            </div>
+        <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{ change_password_form.new_password1.label_tag }}</label>
+
+                        {% if change_password_form.is_bound %}
+                            {% if change_password_form.new_password1.errors %}
+                                {% render_field change_password_form.new_password1 class="form-control is-invalid" value=change_password_form.new_password1.value %}
+                                {% for error in change_password_form.new_password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field change_password_form.new_password1 class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field change_password_form.new_password1 class="form-control" %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{ change_password_form.new_password2.label_tag }}</label>
+
+                        {% if change_password_form.is_bound %}
+                            {% if change_password_form.new_password2.errors %}
+                                {% render_field change_password_form.new_password2 class="form-control is-invalid" value=change_password_form.new_password2.value %}
+                                {% for error in change_password_form.new_password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field change_password_form.new_password2 class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field change_password_form.new_password2 class="form-control" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- PASSWORD FORM SUBMIT BUTTON -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <button class="btn btn-style-1 btn-primary" type="submit" name="password_form" data-toast=""
+                        data-toast-position="topRight" data-toast-type="success"
+                        data-toast-icon="fe-icon-check-circle" data-toast-title="Success!"
+                        data-toast-message="Your password updated successfuly.">Change Password
+                </button>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

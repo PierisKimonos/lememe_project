@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from lememe.models import UserProfile, Post, Comment, Preference, Category
+from django.contrib.auth.forms import UserChangeForm
 
 
 # class CategoryForm(forms.ModelForm):
@@ -70,3 +71,29 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('bio', 'website', 'picture')
+
+
+# Update settings form
+class UpdateUserSettingsForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+        ]
+
+
+# Update settings form
+class UpdateUserProfileSettingsForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            'picture',
+            'website',
+            'bio',
+        ]

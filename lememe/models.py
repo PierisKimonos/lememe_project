@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from lememe.storage import OverwriteStorage
+from social_core.backends.google import GoogleOAuth2
 
 
 def get_user_image_folder(instance, filename):
@@ -14,6 +15,7 @@ def get_user_image_folder(instance, filename):
 
 def get_post_image_folder(instance, filename):
     return "%s/post/%s"%(instance.user.username,instance.client_id)
+
 
 def get_category_image_folder(instance, filename):
     # the name of the file will be the category name with the format (ie. Funny.jpg)
@@ -89,6 +91,9 @@ class Post(models.Model):
     def get_num_of_comments(self):
         return Comment.objects.filter(post=self).count()
 
+    def increament_view_count(self):
+        self.views = self.views + 1
+        self.save()
 
 
 class Comment(models.Model):
@@ -101,7 +106,7 @@ class Comment(models.Model):
 class UserProfile(models.Model):
     bio_length = 200
     # This line is required. Links UserProfile to a User model instance.
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name="user_profile", on_delete=models.CASCADE)
 
     # The additional attributes we wish to include.
     bio = models.CharField(max_length=bio_length, blank=True)
@@ -113,6 +118,18 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+    def save_profile(backend, user, response, *args, **kwargs):
+        if isinstance(backend, GoogleOAuth2):
+            if response.get('image') and response['image'].get('url'):
+                url = response['image'].get('url')
+                ext = url.split('.')[-1]
+                user.avatar.save(
+                    '{0}.{1}'.format('avatar', ext),
+                    ContentFile(urllib2.urlopen(url).read()),
+                    save=False
+                )
+                user.save()
+
 
 class Preference(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -120,4 +137,3 @@ class Preference(models.Model):
     liked = models.BooleanField(blank=True) # True=Like, False=Dislike
 
 
-## NEED TO IMPLEMENT REPORTS
