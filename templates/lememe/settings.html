@@ -131,7 +131,6 @@
                             <small class="form-text text-muted">{{ form.title.help_text }}</small>
                         {% endif %}
                     </div>
-                    {#                WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW#}
                     <div class="col-lg-8 pb-5">
                         <div class="row">
                             <!-- First Name Input -->
@@ -239,50 +238,153 @@
                             </div>
                         </div>
 
-                        <div class="col-12 d-inline">
-                            <div class="form-group">
-                                <label>Bio</label>
-                                <textarea class="form-control" type="text" id="Bio" rows="4"></textarea>
+                    <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ profile_form.bio.label_tag }}</label>
+
+                                    {% if profile_form.is_bound %}
+                                        {% if profile_form.bio.errors %}
+                                            {% render_field profile_form.bio class="form-control is-invalid" value=profile_form.bio.value %}
+                                            {% for error in profile_form.bio.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field profile_form.bio class="form-control is-valid" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field profile_form.bio class="form-control" %}
+                                    {% endif %}
+
+                                    {% if profile_form.bio.help_text %}
+                                        <small class="form-text text-muted">{{ profile_form.bio.help_text }}</small>
+                                    {% endif %}
+                                </div>
                             </div>
-
-                        </div>
                         <div class="col-12 d-inline">
-
+                            <!-- SETTINGS FORM SUBMIT BUTTON -->
                             <div class="d-flex flex-wrap justify-content-between align-items-center">
-                                <button class="btn btn-style-1 btn-primary" type="submit" data-toast=""
+                                <button class="btn btn-style-1 btn-primary" type="submit" name="settings_form" data-toast=""
                                         data-toast-position="topRight" data-toast-type="success"
                                         data-toast-icon="fe-icon-check-circle" data-toast-title="Success!"
                                         data-toast-message="Your profile updated successfuly.">Update Profile
                                 </button>
                             </div>
                         </div>
-                        <hr class="mt-2 mb-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="account-pass">New Password</label>
-                                    <input class="form-control" type="password" id="account-pass">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="account-confirm-pass">Confirm Password</label>
-                                    <input class="form-control" type="password" id="account-confirm-pass">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-wrap justify-content-between align-items-center">
-                            <button class="btn btn-style-1 btn-primary" type="submit" data-toast=""
-                                    data-toast-position="topRight" data-toast-type="success"
-                                    data-toast-icon="fe-icon-check-circle" data-toast-title="Success!"
-                                    data-toast-message="Your profile updated successfuly.">Change Password
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
-
         {% endif %}
     </form>
+    <hr class="mt-2 mb-3">
+    {% if change_password_form %}
+        <form action="{% url 'lememe:show_settings' %}" method="post" novalidate>
+            {% csrf_token %}
 
+            {# HIDDEN FIELDS #}
+            {% for hidden_field in change_password_form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+
+            {# SHOW FORM ERRORS #}
+            {% if change_password_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in change_password_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if change_password_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in change_password_form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+
+
+            <div class="row">
+                <div class="col-6 mx-auto">
+                    <div class="form-group">
+                        <label>{{ change_password_form.old_password.label_tag }}</label>
+
+                        {% if change_password_form.is_bound %}
+                            {% if change_password_form.old_password.errors %}
+                                {% render_field change_password_form.old_password class="form-control is-invalid" value=change_password_form.old_password.value %}
+                                {% for error in change_password_form.old_password.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field change_password_form.old_password class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field change_password_form.old_password class="form-control" %}
+                        {% endif %}
+
+                        {% if change_password_form.old_password.help_text %}
+                            <small class="form-text text-muted">{{ change_password_form.old_password.help_text }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{ change_password_form.new_password1.label_tag }}</label>
+
+                        {% if change_password_form.is_bound %}
+                            {% if change_password_form.new_password1.errors %}
+                                {% render_field change_password_form.new_password1 class="form-control is-invalid" value=change_password_form.new_password1.value %}
+                                {% for error in change_password_form.new_password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field change_password_form.new_password1 class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field change_password_form.new_password1 class="form-control" %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{ change_password_form.new_password2.label_tag }}</label>
+
+                        {% if change_password_form.is_bound %}
+                            {% if change_password_form.new_password2.errors %}
+                                {% render_field change_password_form.new_password2 class="form-control is-invalid" value=change_password_form.new_password2.value %}
+                                {% for error in change_password_form.new_password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% render_field change_password_form.new_password2 class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field change_password_form.new_password2 class="form-control" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- PASSWORD FORM SUBMIT BUTTON -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <button class="btn btn-style-1 btn-primary" type="submit" name="password_form" data-toast=""
+                        data-toast-position="topRight" data-toast-type="success"
+                        data-toast-icon="fe-icon-check-circle" data-toast-title="Success!"
+                        data-toast-message="Your password updated successfuly.">Change Password
+                </button>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}
