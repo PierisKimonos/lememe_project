@@ -8,31 +8,6 @@
 
 {% block rightbody_block %}
 
-    {#    <form action="{% url 'lememe:show_settings' %}" method="post" enctype="multipart/form-data" novalidate>#}
-    {#        {% csrf_token %}#}
-    {##}
-    {#        {% if user_form %}#}
-    {##}
-    {#            {% for field in user_form %}#}
-    {##}
-    {#                <p>{{ field.label }}: {{ field }}</p>#}
-    {#            {% endfor %}#}
-    {##}
-    {#        {% endif %}#}
-    {##}
-    {##}
-    {#        {% if profile_form %}#}
-    {##}
-    {#            {% for field in profile_form %}#}
-    {#                <p>{{ field.label }}: {{ field }}</p>#}
-    {#            {% endfor %}#}
-    {##}
-    {#        {% endif %}#}
-    {##}
-    {#        <input type="submit" name="Submit" title="Submit">#}
-    {##}
-    {#    </form>#}
-
     <form action="{% url 'lememe:show_settings' %}" method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 

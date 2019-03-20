@@ -1,6 +1,6 @@
 from datetime import datetime
 import random, json
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required # login_required redirects to index if user is not logged in (see settings.py->)
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -14,7 +14,8 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 # Import the forms
-from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm, UpdateUserSettingsForm, UpdateUserProfileSettingsForm
+from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm,\
+    UpdateUserSettingsForm, UpdateUserProfileSettingsForm, PasswordChangeCustomForm
 
 def index(request):
     context_dict = {}
@@ -294,14 +295,25 @@ def show_profile(request, username):
     context_dict['liked_posts'] = liked_posts
     return render(request, 'lememe/profile.html', context_dict)
 
+@login_required
 def show_settings(request):
+    context_dict = {}
+    # In the settings page we have two forms
+    # One is settings_form
+    # Other is password_form
     profile = UserProfile.objects.get(user=request.user)
-
-    if request.method == 'POST':
+    print('IN SHOW SETTINGS VIEW')
+    print('METHOD', request.method)
+    print("'settings_form' in request.POST =====", 'settings_form' in request.POST)
+    # Deal with settings form
+    if 'settings_form' in request.POST and request.method == 'POST':
+        print(request.POST)
+        print("HANDLING SETTINGS FORM")
         user_form = UpdateUserSettingsForm(request.POST, instance=request.user)
         profile_form = UpdateUserProfileSettingsForm(request.POST, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
+            print('SHOULDNT BE HERE')
             user_form.save()
             profile = profile_form.save(commit=False)
 
@@ -312,16 +324,57 @@ def show_settings(request):
             profile.save()
 
             return HttpResponseRedirect(reverse('lememe:show_profile',args=[request.user.username]))
-
     else:
         user_form = UpdateUserSettingsForm(instance=request.user)
         profile_form = UpdateUserProfileSettingsForm(instance=profile)
 
-    context_dict = {'user_form':user_form,'profile_form': profile_form}
+
+    # EXAMPLE OF CHANGING PASSWORD
+    # def change_password(request):
+    #     if request.method == 'POST':
+    #         form = PasswordChangeForm(data=request.POST, user=request.user)
+    #
+    #         if form.is_valid():
+    #             form.save()
+    #             update_session_auth_hash(request, form.user)
+    #             return redirect(reverse('accounts:view_profile'))
+    #         else:
+    #             return redirect(reverse('accounts:change_password'))
+    #     else:
+    #         form = PasswordChangeForm(user=request.user)
+    #
+    #         args = {'form': form}
+    #         return render(request, 'accounts/change_password.html', args)
+
+            # Deal with password form
+    if 'password_form' in request.POST and request.method == 'POST':
+        print("HANDLING PASSWORD FORM")
+        print(request.POST)
+        change_password_form = PasswordChangeCustomForm(user=request.user, data=request.POST)
+        # cleaned_data = change_password_form.clean()
+        # print(cleaned_data)
+
+        # print('password form is', change_password_form.is_valid())
+        if change_password_form.is_valid():
+            print("FORM IS VALID")
+            change_password_form.save()
+            update_session_auth_hash(request, change_password_form.user)
+            # If the password is changed successfully, redirect to user's profile page
+            return HttpResponseRedirect(reverse('lememe:show_profile', args=[request.user.username]))
+        else:
+            print("FORM IS NOT VALID")
+            pass
+    else:
+        change_password_form = PasswordChangeCustomForm(user=request.user)
+
+    # load forms in context dictionary
+    context_dict['user_form'] = user_form
+    context_dict['profile_form'] = profile_form
+    context_dict['change_password_form'] = change_password_form
+
     return render(request, 'lememe/settings.html', context_dict)
 
 def feeling_lucky(request):
-
     # pick a post at random and display it
     random_post = random.choice(Post.objects.all())
     return HttpResponseRedirect(reverse('lememe:show_post', args=[random_post.client_id]))
