@@ -48,13 +48,14 @@
 
             {% url 'lememe:show_post' post_id=post.client_id  as url %}
             <li class="nav-item{% if request.path == url %} active{% endif %}">
-                <a class="nav-link" href="{% url 'lememe:feeling_lucky' %}">Feeling Lucky? {% if request.path == url %}
+                <a class="nav-link" style="overflow: auto; white-space: nowrap;"
+                   href="{% url 'lememe:feeling_lucky' %}">Feeling Lucky? {% if request.path == url %}
                     <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
 
             {% url 'lememe:contact' as url %}
             <li class="nav-item{% if request.path == url %} active{% endif %}">
-                <a class="nav-link" href="{{ url }}">Contact Us {% if request.path == url %}
+                <a class="nav-link" href="{{ url }}" style="overflow: auto; white-space: nowrap;">Contact Us {% if request.path == url %}
                     <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
 
