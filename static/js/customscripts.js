@@ -60,9 +60,22 @@ $(document).ready(function () {
 
     // add an onclick listener for the picture in settings form
     // to simulate clicking on the form field button "Choose File"
-    $("#ImagePreview").on('click',function () {
+    $("#ImagePreview").on('click', function () {
         $("#id_picture").click();
     });
+
+    // Highlight category items on hover
+    $(".category-item").hover(function () {
+            $(this).css('background-color', '#ddd');
+        },
+        function () {
+            $(this).css('background', 'white');
+        });
+    $('.category-item').click(function () {
+        $(this).css("background-color", "#09f");
+        var url = $('a', this).attr('href');
+        window.location.href = url;
+    })
 });
 
 function readURL(input) {
