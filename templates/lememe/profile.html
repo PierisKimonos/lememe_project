@@ -1,5 +1,6 @@
 {% extends 'lememe/base.html' %}
 {% load staticfiles %}
+{% load lememe_template_tags %}
 
 
 {% block rightbody_block %}
@@ -7,7 +8,8 @@
 
         <div class="row">
             <div class="col-md-12 col-lg-6 pl-md-5 pr-md-5">
-                <img src="{{ MEDIA_URL }}{{ profile.picture }}" class="rounded-circle img-thumbnail shadow">
+                <img src="{{ MEDIA_URL }}{{ profile.picture }}?v={% random_number 4 %}" class="img-circle img-thumbnail rounded-pill shadow w-100"
+                     alt="Profile Picture" onerror="this.src='{% static 'images/placeholder_profile.png' %}'">
                 <h4 class="post-label" style="margin-top: 20px">{{ profile.user.username.capitalize }}</h4>
                 <div>
                 </div>
