@@ -302,18 +302,13 @@ def show_settings(request):
     # One is settings_form
     # Other is password_form
     profile = UserProfile.objects.get(user=request.user)
-    print('IN SHOW SETTINGS VIEW')
-    print('METHOD', request.method)
-    print("'settings_form' in request.POST =====", 'settings_form' in request.POST)
+
     # Deal with settings form
     if 'settings_form' in request.POST and request.method == 'POST':
-        print(request.POST)
-        print("HANDLING SETTINGS FORM")
         user_form = UpdateUserSettingsForm(request.POST, instance=request.user)
         profile_form = UpdateUserProfileSettingsForm(request.POST, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
-            print('SHOULDNT BE HERE')
             user_form.save()
             profile = profile_form.save(commit=False)
 
@@ -328,41 +323,19 @@ def show_settings(request):
         user_form = UpdateUserSettingsForm(instance=request.user)
         profile_form = UpdateUserProfileSettingsForm(instance=profile)
 
-
-    # EXAMPLE OF CHANGING PASSWORD
-    # def change_password(request):
-    #     if request.method == 'POST':
-    #         form = PasswordChangeForm(data=request.POST, user=request.user)
-    #
-    #         if form.is_valid():
-    #             form.save()
-    #             update_session_auth_hash(request, form.user)
-    #             return redirect(reverse('accounts:view_profile'))
-    #         else:
-    #             return redirect(reverse('accounts:change_password'))
-    #     else:
-    #         form = PasswordChangeForm(user=request.user)
-    #
-    #         args = {'form': form}
-    #         return render(request, 'accounts/change_password.html', args)
-
-            # Deal with password form
+    # Deal with password form
     if 'password_form' in request.POST and request.method == 'POST':
-        print("HANDLING PASSWORD FORM")
-        print(request.POST)
         change_password_form = PasswordChangeCustomForm(user=request.user, data=request.POST)
         # cleaned_data = change_password_form.clean()
         # print(cleaned_data)
 
         # print('password form is', change_password_form.is_valid())
         if change_password_form.is_valid():
-            print("FORM IS VALID")
             change_password_form.save()
             update_session_auth_hash(request, change_password_form.user)
             # If the password is changed successfully, redirect to user's profile page
             return HttpResponseRedirect(reverse('lememe:show_profile', args=[request.user.username]))
         else:
-            print("FORM IS NOT VALID")
             pass
     else:
         change_password_form = PasswordChangeCustomForm(user=request.user)
