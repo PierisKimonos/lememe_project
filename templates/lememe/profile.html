@@ -3,29 +3,30 @@
 
 
 {% block rightbody_block %}
+    <div class="container">
 
-<div class="container">
+        <div class="row">
+            <div class="col-md-12 col-lg-6 pl-md-5 pr-md-5">
+                <img src="{{ MEDIA_URL }}{{ profile.picture }}" class="rounded-circle img-thumbnail shadow">
+                <h4 class="post-label" style="margin-top: 20px">{{ profile.user.username.capitalize }}</h4>
+                <div>
+                </div>
+                <p class="font-italic">"{% if profile.bio %}{{ profile.bio }}{% else %}<span class="small text-secondary">No Bio{% endif %}</span>"</p>
+            </div>
+            <div class="col-sm-12 col-lg-6 mx-0">
 
-			<div class="row">
-				<div class="col-md-12 col-lg-6">
-					<img style="width:400px;height:300px;"  src="{{ MEDIA_URL }}{{profile.picture}}" class="rounded-circle img-thumbnail shadow" >
-					<div><br>
-					</div>
-					<p class="font-italic">"{{profile.bio}}"</p>
-				</div>
-				<div class="col-sm-12 col-lg-6 mx-0">
-
-						<ul class="list-group list-group-flush text-left">
-							<li class="list-group-item">Name: {{profile.user.username.capitalize}}</li>
-								<li class="list-group-item">Email: {{display_user.email}}</li>
-								<li class="list-group-item">Website: {{profile.website}}</li>
-								<li class="list-group-item">Joined: {{display_user.date_joined|date:'d M. Y'}}</li>
-								<li class="list-group-item">Meme count: {{posts|length}}</li>
-						</ul>				
-				</div>	
-			</div>
+                <ul class="list-group list-group-flush text-left">
+                    <li class="list-group-item">Name: {{ profile.user.first_name.capitalize }}</li>
+                    <li class="list-group-item">Surname: {{ profile.user.last_name.capitalize }}</li>
+                    <li class="list-group-item">Email: {{ display_user.email }}</li>
+                    <li class="list-group-item">Website: {{ profile.website }}</li>
+                    <li class="list-group-item">Joined: {{ display_user.date_joined|date:'d M. Y' }}</li>
+                    <li class="list-group-item">Meme count: {{ posts|length }}</li>
+                </ul>
+            </div>
+        </div>
     </div>
-<br>
+    <br>
 	
 	
 	
@@ -55,7 +56,7 @@
                             <img src="{{ MEDIA_URL }}{{ post.image }}" class="card-img-top" alt="Post's Image"></a>
                         <div class="card-footer text-center">
                             <div class="row">
-
+                              
                                 <!-- Likes -->
                                 <div class="col-4">
                                     <div class="badge post-label border shadow-sm">
@@ -79,7 +80,6 @@
                                         <h5 class="my-auto ml-2">{{ post.views }}</h5>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div><br>
@@ -120,7 +120,6 @@
                                         <h5 class="my-auto ml-2">{{ post.post.views}}</h5>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div><br>

@@ -95,7 +95,7 @@
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% endwith %}
                         {{ user.username.capitalize }}
-                        <div class="photo" style="margin-left: 10px"><img src="{{ MEDIA_URL }}{{ user.username }}/{{ user.username }}_profile_pic.jpg"
+                        <div class="photo" style="margin-left: 10px"><img src="{{ MEDIA_URL }}{{ user.user_profile.picture }}"
                                 onerror="this.src='{% static 'images/placeholder_profile.png' %}'"></div>
                     </a>
 
@@ -114,8 +114,7 @@
                 <a class="nav-link" href="{{ url }}"><img src="{% static 'icons/key.svg' %}"
                                                                          style="fill: white"> Login</a>
             </li>
-
-                {% url 'lememe:login' as url %}
+                {% url 'lememe:register' as url %}
             <li class="nav-item{% if request.path == url %} active{% endif %}">
                 <a class="nav-link" href="{{ url }}">Register</a>
             </li>

@@ -82,7 +82,7 @@ class UpdateUserProfileSettingsForm(UserChangeForm):
             'bio',
         ]
 
-
+        
 class PasswordChangeCustomForm(PasswordChangeForm):
     error_css_class = 'has-error'
     error_messages = {'password_incorrect':
