@@ -1,3 +1,4 @@
+import os
 from selenium.webdriver.common.keys import Keys
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
@@ -16,13 +17,14 @@ def login(self):
     password_field.send_keys('admin')
     password_field.send_keys(Keys.RETURN)
 
-def user_login(self):
+
+def user_login(self, username='admin', password='admin'):
     # Types username and password
     username_field = self.browser.find_element_by_name('username')
-    username_field.send_keys('admin')
+    username_field.send_keys(username)
 
     password_field = self.browser.find_element_by_name('password')
-    password_field.send_keys('admin')
+    password_field.send_keys(password)
     password_field.send_keys(Keys.RETURN)
 
 
@@ -44,10 +46,10 @@ def create_pages(categories):
 
     return pages
 
-def create_user():
+def create_user(username="testuser", password="test1234"):
     # Create a user
-    from rango.models import User, UserProfile
-    user = User.objects.get_or_create(username="testuser", password="test1234",
+    from lememe.models import User, UserProfile
+    user = User.objects.get_or_create(username=username, password=password,
                                       first_name="Test", last_name="User", email="testuser@testuser.com")[0]
     user.set_password(user.password)
     user.save()
@@ -58,3 +60,4 @@ def create_user():
     user_profile.save()
 
     return user, user_profile
+

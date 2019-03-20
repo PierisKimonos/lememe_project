@@ -4,14 +4,15 @@ from django.test import TestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from django.core.urlresolvers import reverse
+import lememe.test_utils as tu
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 # Import the forms
 from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm,\
     UpdateUserSettingsForm, UpdateUserProfileSettingsForm, PasswordChangeCustomForm
 
-from lememe.decorators import skip_test
-
+def skip_test(self):
+    pass
 
 class LememeTests(TestCase):
 
@@ -104,6 +105,36 @@ class LememeLiveServerTests(StaticLiveServerTestCase):
 
         # Check if it goes back to the home page
         self.assertEqual(url + reverse('lememe:index'), self.browser.current_url)
+
+    def test_correct_login_credentials_work(self):
+        # Go to Lememe login page
+        self.client.get(reverse('lememe:index'))
+        url = self.live_server_url
+        url = url.replace('localhost', '127.0.0.1')
+        self.browser.get(url + reverse('lememe:login'))
+
+        # Create a new test user in database
+        username = 'testUser'
+        password = 'test1234'
+        tu.create_user(username=username, password=password)
+
+        # Try to log in as that user through the login form
+
+        # Fill Login form
+        # username
+        username_field = self.browser.find_element_by_name('username')
+        username_field.send_keys(username)
+
+        # password
+        password_field = self.browser.find_element_by_name('password')
+        password_field.send_keys(password)
+
+        # Submit
+        self.browser.find_element_by_css_selector(".btn-login").click()
+
+        # Check if body now has welcome message
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertIn(('Welcome back %s'%username).lower(), body.text.lower())
 
 
 #
