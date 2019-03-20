@@ -48,7 +48,12 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username',
+                  'password',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  )
 
 
 class UserProfileForm(forms.ModelForm):
@@ -73,6 +78,8 @@ class UpdateUserSettingsForm(UserChangeForm):
 # Update settings form
 class UpdateUserProfileSettingsForm(UserChangeForm):
     password = None
+    picture = forms.ImageField(label='Profile Picture', required=False,
+                               error_messages={'invalid': "Image files only"}, widget=forms.FileInput)
 
     class Meta:
         model = UserProfile
@@ -112,7 +119,7 @@ class PasswordChangeCustomForm(PasswordChangeForm):
         cd = self.cleaned_data
         if cd.get('new_password1') != cd.get('new_password2'):
             self.add_error('new_password2', "passwords do not match !")
-            # raise forms.ValidationError('password mismatch')
+            raise forms.ValidationError('password mismatch')
         return cd
 
     def clean_new_password2(self):
