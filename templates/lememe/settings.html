@@ -1,5 +1,6 @@
 {% extends 'lememe/base.html' %}
 {% load staticfiles %}
+{% load lememe_template_tags %}
 {% load widget_tweaks %}
 
 {% block title_block %}
@@ -43,14 +44,16 @@
             <div class="container">
                 <h2>User's settings</h2>
                 <div class="row">
-                    <div class="col-lg-4 pb-5">
+                    <div class="col-lg-5 pb-5">
                         <!--Profile Picture input-->
                         <div class="form-row">
                             <div class="container">
-                                <div class="picture-container">
-                                    <div class="picture">
-                                        <img src=""
-                                             class="picture-src" id="ImagePreview" title="">
+                                <div class="picture-container">{{ profile_form.picture.label_tag }}
+                                    <div class="img-thumbnail">
+                                        <img src="{{ MEDIA_URL }}{{ user.user_profile.picture }}?v={% random_number 4 %}"
+                                             class="picture-src" id="ImagePreview" alt="Profile Picture"
+                                             onerror="this.src='{% static 'images/placeholder_profile.png' %}'">
+                                    </div>
                                         {% if profile_form.is_bound %}
                                             {% if profile_form.picture.errors %}
                                                 {% render_field profile_form.picture class="form-control is-invalid" %}
@@ -65,7 +68,7 @@
                                         {% else %}
                                             {% render_field profile_form.picture class="form-control" %}
                                         {% endif %}
-                                    </div>
+
                                 </div>
                             </div>
                             {% if profile_form.picture.help_text %}
@@ -106,7 +109,7 @@
                             <small class="form-text text-muted">{{ form.title.help_text }}</small>
                         {% endif %}
                     </div>
-                    <div class="col-lg-8 pb-5">
+                    <div class="col-lg-7 pb-5">
                         <div class="row">
                             <!-- First Name Input -->
                             <div class="col-md-6">
@@ -270,17 +273,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
-
-            {% if change_password_form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in change_password_form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-
-
 
             <div class="row">
                 <div class="col-6 mx-auto">
