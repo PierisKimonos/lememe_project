@@ -17,82 +17,16 @@ def populate():
     # Superuser is used to create the initial categories
     superuser = create_superuser("god", "1111")
 
+    # Load population data from its corresponding csv file
+    print("Loading population data...")
     categories = parseCatrgories(os.path.join("population_files","categories.csv"))
-    # categories = [
-    #     "Funny",
-    #     "Animals",
-    #     "Legends",
-    #     "Awesome",
-    #     "Basketball",
-    #     "Car",
-    #     "Cosplay",
-    #     "Art",
-    #     "Football",
-    #     "Gaming",
-    #     "History",
-    #     "Horror",
-    #     "Family",
-    #     "Movie",
-    #     "Music",
-    #     "Kids",
-    #     "Tech",
-    #     "Politics",
-    #     "Relationship",
-    #     "Roast",
-    #     "Savage",
-    #     "School",
-    #     "Sport",
-    # ]
 
     posts = parsePosts(os.path.join("population_files","posts.csv"))
-    # posts = {
-    #     "maria": [
-    #         {"title": "Title for post 1",
-    #          "category": "Funny",
-    #          "image": "maria1.jpg"},
-    #
-    #         {"title": "Title for post 2",
-    #          "category": "Funny",
-    #          "image": "maria2.jpg"},
-    #
-    #         {"title": "Title for post 3",
-    #          "category": "Funny",
-    #          "image": "maria3.jpg"},
-    #
-    #     ],
-    #     "john": [
-    #         {"title": "Title for post 1",
-    #          "category": "Politics",
-    #          "image": "john1.jpg"},
-    #
-    #         {"title": "Title for post 2",
-    #          "category": "Politics",
-    #          "image": "john2.jpg"},
-    #
-    #         {"title": "Title for post 3",
-    #          "category": "Politics",
-    #          "image": "john3.jpg"},
-    #     ],
-    # }
 
     users = parseUsers(os.path.join("population_files","users.csv"))
 
-    #
-    # comments = [
-    #     {"maria": {"password": "1111",
-    #                "bio": "Maria's Bio.",
-    #                "email": "maria1234@lememe.com",
-    #                "website": "www.maria1234.com",
-    #                "categories": maria_comments,
-    #                "posts": maria_posts, },
-    #      "John": {"password": "1111",
-    #               "bio": "John's Bio.",
-    #               "email": "john1234@lememe.com",
-    #               "website": "www.john1234.com",
-    #               "categories": john_comments,
-    #               "posts": john_posts, }
-    #      }
-    # ]
+    comments = parseComments(os.path.join("population_files","comments.csv"))
+    print("Data loaded.")
 
     # ----------------------------------------------------
     # ENTITIES
@@ -111,13 +45,16 @@ def populate():
     # 3. UserProfiles
     # 4. Posts
     # 5. Comments
+    # 6. Preferences
     # ----------------------------------------------------
 
+    print("Now populating... please wait...")
+    print("Adding categories...",end=" ", flush=True)
     for cat in sorted(categories,key=lambda x: x[0]):  # sort the categories by name
         c = add_category(user=superuser, name=cat[0], image_name=cat[1])
-        # for p in cat_data["pages"]:
-        #     add_page(c, p["title"], p["url"], p["views"])
+    print("DONE")
 
+    print("Adding user profiles and their posts...",end=" ",flush=True)
     for user, user_data in users.items():
         u = add_user(user,
                      user_data["password"],
@@ -133,21 +70,37 @@ def populate():
             p = add_post(u,
                          category,
                          post["title"],
-                         post["image"])
+                         post["image"],
+                         random.randint(0,100))
+    print("DONE")
 
-    # add 50 random comments to random posts as random existing users
-    numOfComments = 50
-    for i in range(1, numOfComments + 1):
-        if Comment.objects.filter(id=i).count() == 0:
-            user = random.choice(User.objects.all())
-            post = random.choice(Post.objects.all())
-            c = add_comment(user=user,post=post, text=generateHaHaComment())
+    print("Adding comments...", end=" ", flush=True)
+    # For each post in the database, add 10 random comments from
+    # the csv file and assign each comment to a random user
+    for post in Post.objects.all():
+        # pick how many comments to add to this Post
+        how_many = random.randint(5,7)
 
+        # Obtain random samples from users and comments of size "how_many"
+        random_users = random.sample(list(User.objects.all()), how_many)
+        random_comments = random.sample(comments, how_many)
 
-    # # Print out the categories we have added.
-    # for c in Category.objects.all():
-    #     for p in Page.objects.filter(category=c):
-    #         print("- {0} - {1}".format(str(c), str(p)))
+        # Generate a list of tuples for the two samples --> (user,comment) pairs
+        user_comment_pairs = zip(random_users, random_comments)
+
+        for user, comment in user_comment_pairs:
+            c = add_comment(user=user, post=post, text=comment)
+    print("DONE")
+
+    # Adding random preferences to the 15 most views posts
+    print("Adding Preferences...", end=" ", flush=True)
+    for post in Post.objects.order_by("-views")[:15]:
+        random_users = random.sample(list(User.objects.all()), 5)
+        for user in random_users:
+            # True -> Liked | False -> Disliked
+            p = add_preference(user=user, post=post, liked=bool(random.getrandbits(1)))
+    print("DONE")
+    print("Finished!")
 
 
 def create_superuser(username, password):
@@ -158,22 +111,6 @@ def create_superuser(username, password):
     superuser.save()
     return superuser
 
-
-# def add_user(username, password, firstname, surname, bio, email, website):
-#     user = User.objects.get_or_create(username=username, first_name=firstname, last_name=surname, email=email)[0]
-#     u = UserProfile.objects.get_or_create(user=user)[0]
-#     # u.first_name = firstname
-#     # u.last_name = surname
-#     u.password = password
-#     if u.picture.name != "%s.jpg"%username:
-#         image_path = os.path.join(PROJECT_DIR, 'population_images','profiles','%s.jpg'%username)
-#         u.picture.save("%s.jpg"%username, File(open(image_path, 'rb')))
-#     u.bio = bio
-#     # u.email = email
-#     u.website = website
-#     u.joined = datetime.now()
-#     u.save()
-#     return user
 
 def add_user(username, password, firstname, surname, bio, email, website):
     # Start with User model first
@@ -201,9 +138,10 @@ def add_category(user, name, image_name, views=0):
     c.save()
     return c
 
-# posts(User, Category, title, date)
-def add_post(user, category, title, image_name):
+
+def add_post(user, category, title, image_name, views):
     p = Post.objects.get_or_create(title=title, user=user, category=category)[0]
+    p.views = views
     image_path = os.path.join(PROJECT_DIR, 'population_images', 'posts', image_name)
     p.image.save(image_name, File(open(image_path, 'rb')))
     p.save()
@@ -217,12 +155,13 @@ def add_comment(user, post, text):
     return c
 
 
-def generateHaHaComment():
-    hahas = ["ha", "hahaha", "hahahahaha", "lol", "omg"]
-    comment = []
-    for i in range(10):
-        comment.append(random.choice(hahas))
-    return " ".join(comment)
+def add_preference(user, post, liked):
+    p = Preference.objects.get_or_create(user=user, post=post, liked=liked)[0]
+    p.save()
+    return p
+
+
+
 
 
 # Start execution here!
