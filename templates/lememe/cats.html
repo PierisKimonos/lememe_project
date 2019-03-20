@@ -9,7 +9,7 @@
         {% if cats %}
         {% for c in cats %}
         {% if c == act_cat %}
-        <li class="list-group-item container justify-content-between category-item">
+        <li id="{{ c.name }}" class="list-group-item container justify-content-between category-item">
             <div class="row">
                 <div class="col-3">
                     <div class="image-cropper ml-3">
@@ -27,7 +27,7 @@
         </li>
 
         {% else %}
-        <li class="list-group-item container justify-content-between category-item">
+        <li id="{{ c.name }}" class="list-group-item container justify-content-between category-item">
             <div class="row">
                 <div class="col-3">
                     <div class="image-cropper ml-3">

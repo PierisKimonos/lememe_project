@@ -104,11 +104,11 @@
             {% endif %}
         </ul>
         <form class="form-inline justify-content-center justify-content-lg-end" action="{% url 'lememe:search' %}" method="GET">
-            <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}"
+            <input id="search_text_input" class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}"
                    required="required"
                    placeholder="Search"
                    aria-label="Search">
-            <button class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img
+            <button id="search_button" class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img
                     src="{% static 'icons/search.svg'%}"></button>
         </form>
     </div>
