@@ -29,8 +29,9 @@
     {% endblock %}
 </div>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    {% url 'lememe:index' as url %}
     <a class="navbar-brand" href="{% url 'lememe:index' %}">
-        <img id="lememe_logo" src="{% static 'images\lememe_logo.svg' %}">
+        <img id="lememe_logo" class="{% if request.path == url %} breath-animation duration{% endif %}" src="{% static 'images\lememe_logo.svg' %}">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,13 +49,14 @@
 
             {% url 'lememe:show_post' post_id=post.client_id  as url %}
             <li class="nav-item{% if request.path == url %} active{% endif %}">
-                <a class="nav-link" href="{% url 'lememe:feeling_lucky' %}">Feeling Lucky? {% if request.path == url %}
+                <a class="nav-link" style="overflow: auto; white-space: nowrap;"
+                   href="{% url 'lememe:feeling_lucky' %}">Feeling Lucky? {% if request.path == url %}
                     <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
 
             {% url 'lememe:contact' as url %}
             <li class="nav-item{% if request.path == url %} active{% endif %}">
-                <a class="nav-link" href="{{ url }}">Contact Us {% if request.path == url %}
+                <a class="nav-link" href="{{ url }}" style="overflow: auto; white-space: nowrap;">Contact Us {% if request.path == url %}
                     <span class="sr-only">(current)</span>{% endif %}</a>
             </li>
 
@@ -103,11 +105,11 @@
             {% endif %}
         </ul>
         <form class="form-inline justify-content-center justify-content-lg-end" action="{% url 'lememe:search' %}" method="GET">
-            <input class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}"
+            <input id="search_text_input" class="form-control mr-sm-2 w-50" name="keyword" type="text" value="{{ keyword }}"
                    required="required"
                    placeholder="Search"
                    aria-label="Search">
-            <button class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img
+            <button id="search_button" class="btn btn-secondary my-2 my-sm-0 bg-warning text-dark" type="submit"><img
                     src="{% static 'icons/search.svg'%}"></button>
         </form>
     </div>
@@ -124,7 +126,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                     {% block sidebar_block %}
-                    {% get_category_list category %}
+                    {% get_category_list active_cat %}
                     {% endblock %}
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
