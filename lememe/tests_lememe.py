@@ -1,8 +1,9 @@
 # Lememe Tests
-import os, socket
+import os, socket, time
 from django.test import TestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 from django.core.urlresolvers import reverse
 import lememe.test_utils as tu
 # Import the models
@@ -11,12 +12,13 @@ from lememe.models import UserProfile, Post, Comment, Preference, Category
 from lememe.forms import UserForm, UserProfileForm, PostForm, CommentForm,\
     UpdateUserSettingsForm, UpdateUserProfileSettingsForm, PasswordChangeCustomForm
 
+
 def skip_test(self):
     pass
 
+
 class LememeTests(TestCase):
 
-    @skip_test
     def test_registration_form_is_displayed_correctly(self):
         #Access registration page
         try:
@@ -41,11 +43,10 @@ class LememeTests(TestCase):
         self.assertIn('name="submit"', response.content.decode('ascii'))
         self.assertIn('value="Register"', response.content.decode('ascii'))
 
-    @skip_test
     def test_login_form_is_displayed_correctly(self):
         #Access login page
         try:
-            response = self.client.get(reverse('lememe:register'))
+            response = self.client.get(reverse('lememe:login'))
         except:
             return False
 
@@ -91,7 +92,6 @@ class LememeLiveServerTests(StaticLiveServerTestCase):
         self.browser.refresh()
         self.browser.quit()
 
-    @skip_test
     def test_navigate_from_about_to_index_when_clicking_logo(self):
         # Go to Lememe main page
         self.client.get(reverse('lememe:index'))
@@ -135,6 +135,73 @@ class LememeLiveServerTests(StaticLiveServerTestCase):
         # Check if body now has welcome message
         body = self.browser.find_element_by_tag_name('body')
         self.assertIn(('Welcome back %s'%username).lower(), body.text.lower())
+
+    def test_register_user(self):
+        # Go to Lememe Registration page
+        self.client.get(reverse('lememe:index'))
+        url = self.live_server_url
+        url = url.replace('localhost', '127.0.0.1')
+        self.browser.get(url + reverse('lememe:register'))
+
+        username = 'testUser'
+        password = 'test1234'
+
+        # Fill registration form
+        # username
+        username_field = self.browser.find_element_by_id('id_username')
+        username_field.send_keys(username)
+
+        # password
+        password_field = self.browser.find_element_by_id('id_password')
+        password_field.send_keys(password)
+
+        # first name
+        firstname_field = self.browser.find_element_by_id('id_first_name')
+        firstname_field.send_keys('Test')
+
+        # last name
+        lastname_field = self.browser.find_element_by_id('id_last_name')
+        lastname_field.send_keys('User')
+
+        # email
+        email_field = self.browser.find_element_by_id('id_email')
+        email_field.send_keys('testuser@testuser.com')
+
+        # bio
+        bio_field = self.browser.find_element_by_id('id_bio')
+        bio_field.send_keys("Test User's Bio")
+
+        # website
+        website_field = self.browser.find_element_by_id('id_website')
+        website_field.send_keys('http://www.testuser.com')
+
+        # Submit
+        website_field.send_keys(Keys.RETURN)
+
+        # Check we are on Login Page now
+        print(reverse('lememe:login'))
+        print(self.browser.current_url)
+        # self.client.get(reverse('lememe:index'))
+        print(url)
+        self.assertEquals(self.browser.current_url, url + reverse('lememe:login'));
+
+        # Try to log in as that user through the login form
+
+        # Fill Login form
+        # username
+        username_field = self.browser.find_element_by_name('username')
+        username_field.send_keys(username)
+
+        # password
+        password_field = self.browser.find_element_by_name('password')
+        password_field.send_keys(password)
+
+        # Submit
+        self.browser.find_element_by_css_selector(".btn-login").click()
+
+        # Check if body now has welcome message
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertIn(('Welcome back %s' % username).lower(), body.text.lower())
 
 
 #
