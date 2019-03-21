@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.inclusion_tag('lememe/cats.html')
 def get_category_list(cat=None):
-    return {'cats': sorted(Category.objects.all()),
+    return {'cats': Category.objects.all().extra(select={'lower_name':'lower(name)'}).order_by('lower_name'),
             'act_cat': cat,
             }
 
