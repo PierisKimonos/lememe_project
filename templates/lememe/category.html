@@ -2,7 +2,11 @@
 {% load staticfiles %}
 
 {% block title_block %}
+    {% if active_cat %}
+    {{ active_cat }}
+    {% else %}
     Category
+    {% endif %}
 {% endblock %}
 
 
@@ -22,7 +26,7 @@
         <div class="divider-horizontal"></div>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade{% if activate_new_tab != True %} show active{% endif %}" id="popular" role="tabpanel" aria-labelledby="popular-tab">
-           
+            {% if popular_posts %}
                 {% for post in popular_posts %}
                     <!-- View for one post -->
                     <div class="card border-0 shadow">
@@ -60,6 +64,9 @@
                         </div>
                     </div><br>
                 {% endfor %}
+            {% else %}
+            <h6 class="text-muted"><strong>No Popular posts for "{{ active_cat.name }}"</strong></h6>
+            {% endif %}
 
                 {% if popular_posts.has_other_pages %}
                     <ul class="pagination justify-content-center pt-4">
@@ -88,7 +95,7 @@
                 {% endif %}
             </div>
             <div class="tab-pane fade{% if activate_new_tab == True %} show active{% endif %}" id="new" role="tabpanel" aria-labelledby="new_tab">
-
+            {% if new_posts %}
                 {% for post in new_posts %}
                     <!-- View for one post -->
                     <div class="card border-0 shadow">
@@ -126,6 +133,9 @@
                         </div>
                     </div><br>
                 {% endfor %}
+            {% else %}
+            <h6 class="text-muted"><strong>No New posts for "{{ active_cat.name }}"</strong></h6>
+            {% endif %}
                 <div class="container m-5 bg-warning"></div>
 
                 {% if new_posts.has_other_pages %}

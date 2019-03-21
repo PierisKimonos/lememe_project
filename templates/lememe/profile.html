@@ -49,7 +49,7 @@
         <div class="divider-horizontal"></div>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade{% if activate_new_tab != True %} show active{% endif %}" id="popular" role="tabpanel" aria-labelledby="popular-tab">
-
+            {% if posts %}
                 {% for post in posts %}
                     <!-- View for one post -->
                     <div class="card border-0 shadow">
@@ -86,6 +86,9 @@
                         </div>
                     </div><br>
                 {% endfor %}
+            {% else %}
+            <h6 class="text-muted"><strong>"{{ profile.user.username.capitalize }}" didn't upload any memes yet...</strong></h6>
+            {% endif %}
             </div>
 			
             <div class="tab-pane fade{% if activate_new_tab == True %} show active{% endif %}" id="new" role="tabpanel" aria-labelledby="new_tab">
@@ -126,7 +129,7 @@
                         </div>
                     </div><br>
                 {% endfor %}
-				{% else %}
-				<p>{{profile.user.username.capitalize}} hasn't liked any memes yet...</p>
-				{% endif %}
+                {% else %}
+                <h6 class="text-muted"><strong>"{{ profile.user.username.capitalize }} didn't like any memes yet...</strong></h6>
+                {% endif %}
 {% endblock %}
