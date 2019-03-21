@@ -31,7 +31,7 @@ class LememeLiveServerTestsRI(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.refresh()
         self.browser.quit()
-
+    @skip_test
     def test_category_page_appears_when_clicked(self):
         print("here")
         # Go to Lememe main page
@@ -112,3 +112,23 @@ class LememeLiveServerTestsRI(StaticLiveServerTestCase):
 
         body = self.browser.find_element_by_tag_name('body')
         self.assertIn(("No results found for \"%s\""%search_var).lower(), body.text.lower())
+
+
+    def test_categories_exist(self):
+        print("here")
+        # Go to Lememe main page
+        self.client.get(reverse('lememe:index'))
+        url = self.live_server_url
+        print(url)
+        url = url.replace('localhost', '127.0.0.1')
+        self.browser.get(url + reverse('lememe:index'))
+
+        user = User.objects.get(username='admin')
+
+        #create categories for the database
+        # Create categories from 1 to 10
+        categories = []
+        for i in range(1, 11):
+            categories.append(Category.objects.get_or_create(user=user, name="Category " + str(i), picture="noFile.jpg")[0])
+
+        print(len(categories),"categories are present in this page!")
