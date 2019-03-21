@@ -225,6 +225,7 @@ def show_category(request, category_name_slug):
             # So the .get() method returns one model instance or raises an exception.
             category = Category.objects.get(slug=category_name_slug)
 
+
             # Popular posts paging
             # Filter by Category
             popular_posts = Post.objects.filter(category=category).order_by("-views")
@@ -259,11 +260,11 @@ def show_category(request, category_name_slug):
                 new_posts = new_paginator.page(new_paginator.num_pages)
 
             context_dict["new_posts"] = new_posts
+            context_dict['active_cat'] = category
 
         except Category.DoesNotExist:
             # if Category does not exist, return None in context dictionary
-            context_dict["popular_posts"] = None
-            context_dict["new_posts"] = None
+            return HttpResponseRedirect(reverse('lememe:index'))
 
     # Go render the response and return it to the client.
     return render(request, 'lememe/category.html', context=context_dict)

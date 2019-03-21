@@ -107,13 +107,13 @@ class PasswordChangeCustomForm(PasswordChangeForm):
                                         'class': 'form-control'},
                                         render_value=True),
                                     error_messages={
-                                        'required': 'Old password field cannot be blank'})
+                                        'required': 'New password field cannot be blank'})
     new_password2 = forms.CharField(required=True, label='Confirm New Password',
                                     widget=forms.PasswordInput(attrs={
                                         'class': 'form-control'},
                                         render_value=True),
                                     error_messages={
-                                        'required': 'Old password field cannot be blank'})
+                                        'required': 'New password field cannot be blank'})
 
     def clean(self):
         cd = self.cleaned_data
