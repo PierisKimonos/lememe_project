@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from django.core.urlresolvers import reverse
 import lememe.test_utils as tu
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 # Import the models
 from lememe.models import UserProfile, Post, Comment, Preference, Category
 # Import the forms
@@ -348,3 +349,68 @@ class LememeLiveServerTests(StaticLiveServerTestCase):
         # Check we are on homepage
         body = self.browser.find_element_by_tag_name('body')
         self.assertIn('Welcome to le-Meme'.lower(), body.text.lower())
+
+    def test_popup_after_pressing_submit(self):
+        # Go to lememe index page page
+        self.client.get(reverse('lememe:index'))
+        url = self.live_server_url
+        url = url.replace('localhost', '127.0.0.1')
+
+        # Create objects
+        user = User.objects.get(username='admin')
+        testCategory = Category.objects.create(user=user, name="TestCategory", picture="noFile.jpg")
+        post = Post.objects.create(user=user, category=testCategory, client_id="52db56c0", title="test",
+                                   image="noFile.jpg")
+
+        # Go to lememe post page
+        self.browser.get(url + reverse('lememe:index') + "post/52db56c0")
+        popup = self.browser.find_elements_by_id('disabled_comment_btn')
+        text = (popup[0].get_attribute("data-content"))
+        self.assertEqual(text, "Please <a href='/lememe/login/'>login</a> in order to comment.")
+
+    def test_comment_submits_properly(self):
+        # Go to lememe index page page
+        self.client.get(reverse('lememe:index'))
+        url = self.live_server_url
+        url = url.replace('localhost', '127.0.0.1')
+
+        # Go to Lememe login page
+        self.browser.get(url + reverse('lememe:login'))
+
+        # Create a new test user in database
+        username = 'testUser'
+        password = 'test1234'
+        comment = "This a UNIQUE comment to be posted by testUser"
+        user = User.objects.get_or_create(username=username)[0]
+        user.password = make_password(password)
+        user.save()
+        user_profile = UserProfile.objects.create(user=user, picture="noFile.jpg")
+
+        # Fill Login form
+        # username
+        username_field = self.browser.find_element_by_name('username')
+        username_field.send_keys(username)
+
+        # password
+        password_field = self.browser.find_element_by_name('password')
+        password_field.send_keys(password)
+
+        # Submit
+        self.browser.find_element_by_css_selector(".btn-login").click()
+        # Create objects
+        testCategory = Category.objects.create(user=user, name="TestCategory", picture="noFile.jpg")
+        post = Post.objects.create(user=user, category=testCategory, client_id="52db56c0", title="test",
+                                   image="noFile.jpg")
+
+        # Go to lememe post page
+        self.browser.get(url + reverse('lememe:show_post', args=[post.client_id]))
+
+        # Find comment element and submit text
+        text = self.browser.find_element_by_name("text")
+        text.send_keys(comment)
+        self.browser.find_element_by_class_name("btn-primary").click()
+        time.sleep(1)
+
+        # Check if the new comment is present in the page
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertIn(comment.lower(), body.text.lower())
