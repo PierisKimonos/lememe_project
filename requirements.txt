@@ -2,7 +2,7 @@ cffi==1.11.5
 chardet==3.0.4
 decorator==4.4.0
 defusedxml==0.5.0
-Django==1.11.17
+Django==1.11.23
 django-cors-headers==2.4.0
 django-filer==1.4.4
 django-js-asset==1.2.2
